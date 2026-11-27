@@ -4,6 +4,7 @@
 //! name) opens one component; ← and → cycle scenes. `-- --snap out.png --at 2
 //! --scene area` renders one headless.
 
+mod bare;
 mod interactions;
 mod showcase;
 mod state;

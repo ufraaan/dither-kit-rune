@@ -36,12 +36,13 @@ Scenes: `dashboard`, `area`, `bar`, `sparkline`, `donut`, `radar`, `avatars`,
 `buttons`, `gradient`.
 
 The landing page in [`www/`](www/index.html) uses 2× WebP captures from
-[`www/shots/`](www/shots), dark and light. Regenerate them with
-`DITHER_LIGHT=1` set for the light set, e.g.:
+[`www/shots/`](www/shots), dark and light. `DITHER_BARE=1` drops the scene
+chrome, `DITHER_LIGHT=1` renders the light theme, and `--size` sets the canvas:
 
 ```sh
-cargo run -p gallery -- --snap /tmp/area.png --at 2 --scene area
-cwebp -q 85 /tmp/area.png -o www/shots/area-dark.webp
+DITHER_BARE=1 cargo run -p gallery -- --snap /tmp/area.png --at 2 \
+  --scene area --size 960x640
+cwebp -q 86 /tmp/area.png -o www/shots/area-dark.webp
 ```
 
 Bloom is configured in `dither_core::bloom` but not yet drawn as a Rune layer.

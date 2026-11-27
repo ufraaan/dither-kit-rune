@@ -1,7 +1,7 @@
 //! scene dispatch: a 2×2 dashboard grid or a single component
 
 use crate::state::State;
-use crate::{interactions, showcase, widgets};
+use crate::{bare, interactions, showcase, widgets};
 use rune::tok;
 use rune::tok::Theme;
 use rune::{Cx, El, col, row};
@@ -13,6 +13,9 @@ pub fn page(state: &State, cx: &mut Cx<State>) -> El {
         state.reduced.set(true);
     }
     let theme = tok::theme(state.dark);
+    if std::env::var_os("DITHER_BARE").is_some() && state.scene.is_showcase() {
+        return bare::page(state, &theme, state.scene);
+    }
     if state.scene.is_showcase() {
         showcase::page(state, &theme, state.scene)
     } else {

@@ -85,7 +85,7 @@ pub struct State {
     pub spark_b: Chart,
     pub pie: Pie,
     pub radar: Radar,
-    pub avatars: [Avatar; 4],
+    pub avatars: Vec<Avatar>,
     pub buttons: [DitherButton; 4],
     pub gradient: DitherGradient,
 }
@@ -205,13 +205,22 @@ fn radar_chart(size: (f32, f32)) -> Radar {
     )
 }
 
-fn avatars(size: f32) -> [Avatar; 4] {
-    [
-        Avatar::new("ada", size),
-        Avatar::new("Ada Lovelace", size),
-        Avatar::new("🦀", size),
-        Avatar::new("grace hopper", size),
-    ]
+pub const AVATAR_NAMES: [&str; 8] = [
+    "ada",
+    "Ada Lovelace",
+    "🦀",
+    "grace hopper",
+    "linus",
+    "margaret hamilton",
+    "dennis",
+    "barbara liskov",
+];
+
+fn avatars(size: f32) -> Vec<Avatar> {
+    AVATAR_NAMES
+        .iter()
+        .map(|name| Avatar::new(*name, size))
+        .collect()
 }
 
 fn buttons(size: (f32, f32)) -> [DitherButton; 4] {
@@ -259,8 +268,19 @@ struct Sizes {
     gradient: (f32, f32),
 }
 
-fn sizes(scene: Scene) -> Sizes {
-    if scene.is_showcase() {
+fn sizes(scene: Scene, bare: bool) -> Sizes {
+    if bare {
+        Sizes {
+            area: (900.0, 520.0),
+            bar: (900.0, 520.0),
+            spark: (900.0, 300.0),
+            pie: (640.0, 560.0),
+            radar: (720.0, 560.0),
+            avatar: 92.0,
+            button: (200.0, 56.0),
+            gradient: (900.0, 480.0),
+        }
+    } else if scene.is_showcase() {
         Sizes {
             area: (820.0, 320.0),
             bar: (820.0, 300.0),
@@ -287,7 +307,7 @@ fn sizes(scene: Scene) -> Sizes {
 
 impl State {
     pub fn set_scene(&mut self, scene: Scene) {
-        let sizes = sizes(scene);
+        let sizes = sizes(scene, std::env::var_os("DITHER_BARE").is_some());
         self.scene = scene;
         self.area = area_chart(sizes.area);
         self.bar = bar_chart(sizes.bar);
@@ -327,7 +347,7 @@ impl State {
 }
 
 pub fn init() -> State {
-    let sizes = sizes(Scene::Dashboard);
+    let sizes = sizes(Scene::Dashboard, std::env::var_os("DITHER_BARE").is_some());
     State {
         scene: Scene::Dashboard,
         // headless captures pick the theme without a second set of scenes
