@@ -7,6 +7,7 @@ use dither_core::bayer::CELL;
 use dither_core::bayer::backing_size;
 use dither_core::color::DitherColor;
 use dither_core::paint::{PaintOpts, Variant, paint_column};
+use dither_core::stack::StackMode;
 use dither_kit_rune::cartesian::{RenderOpts, Series, render};
 use dither_kit_rune::rune_el::SurfaceTexture;
 use rune::tok::{self, type_};
@@ -15,6 +16,7 @@ use rune::{AppSpec, Cx, El, col, row, text};
 struct State {
     chart: SurfaceTexture,
     swatches: [(Variant, SurfaceTexture); 4],
+    dark: bool,
 }
 
 fn wave(i: usize, phase: f64) -> f64 {
@@ -22,7 +24,7 @@ fn wave(i: usize, phase: f64) -> f64 {
     52.0 + x.sin() * 26.0 + (x * 0.45).cos() * 18.0
 }
 
-fn chart() -> SurfaceTexture {
+fn chart(mode: StackMode) -> SurfaceTexture {
     let (cols, rows) = backing_size(560.0, 220.0);
     let mut surface = Surface::new(cols, rows);
     let series = [
@@ -36,7 +38,11 @@ fn chart() -> SurfaceTexture {
         )
         .variant(Variant::Dotted),
     ];
-    render(&mut surface, 220.0, &series, &RenderOpts::default());
+    let opts = RenderOpts {
+        stack: mode,
+        ..RenderOpts::default()
+    };
+    render(&mut surface, 220.0, &series, &opts);
     let texture = SurfaceTexture::new();
     texture.upload_owned(surface);
     texture
@@ -57,7 +63,7 @@ fn swatch(variant: Variant, color: DitherColor) -> SurfaceTexture {
 
 fn init() -> State {
     State {
-        chart: chart(),
+        chart: chart(StackMode::None),
         swatches: [
             (
                 Variant::Gradient,
@@ -70,11 +76,24 @@ fn init() -> State {
             ),
             (Variant::Solid, swatch(Variant::Solid, DitherColor::Pink)),
         ],
+        dark: true,
     }
 }
 
+fn stacked(s: &mut State) {
+    s.chart = chart(StackMode::Stacked);
+}
+
+fn percent(s: &mut State) {
+    s.chart = chart(StackMode::Percent);
+}
+
+fn light(s: &mut State) {
+    s.dark = false;
+}
+
 fn view(s: &State, _: &mut Cx<State>) -> El {
-    let t = tok::theme(true);
+    let t = tok::theme(s.dark);
     let heading = text("Dither Kit").font(type_::TITLE).color(t.text);
     let sub = text("ordered-dither charts, painted natively in Rune").color(t.text_secondary);
     let chart = s.chart.el().key("chart").size(560.0, 220.0);
@@ -103,7 +122,7 @@ fn view(s: &State, _: &mut Cx<State>) -> El {
 
 fn main() {
     rune::run(AppSpec::<State> {
-        scenes: &[],
+        scenes: &[("stacked", stacked), ("percent", percent), ("light", light)],
         ..AppSpec::new("Dither Kit Gallery", (624.0, 470.0), init, view)
     });
 }
