@@ -3,7 +3,8 @@
 A native Rust port of [Dither Kit](https://github.com/Boring-Software-Inc/dither-kit) for the
 [Rune](https://github.com/anomalyco/rune) UI framework. Unofficial; see [NOTICE.md](NOTICE.md).
 
-macOS is the only supported target for now.
+This is Rune-specific: it targets the Rune UI framework and does not aim at other Rust UI
+crates. macOS is the only supported target for now.
 
 ## Layout
 
