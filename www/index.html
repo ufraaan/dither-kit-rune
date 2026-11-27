@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dither-kit-rune</title>
 <meta name="description" content="A native Rust port of Dither Kit for the Rune UI framework: ordered-dither charts, avatars, buttons and gradients from one deterministic engine.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
 <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
@@ -170,7 +171,7 @@
     place-items: center;
   }
   .copy:hover { color: var(--text); }
-  .copy svg { width: 14px; height: 14px; }
+  .copy i, .prompt-copy i { font-size: 16px; line-height: 1; }
   .copy.done { color: var(--green); }
 
   .or {
@@ -200,6 +201,7 @@
     cursor: pointer;
   }
   .prompt-copy:hover { color: var(--text); border-color: var(--dim); }
+  .prompt-copy.done { color: var(--green); border-color: var(--green); }
   .prompt-copy.done { color: var(--green); border-color: var(--green); }
   .prompt-note { margin: 14px 0 0; text-align: center; font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--dim); }
 
@@ -304,32 +306,32 @@
 
     <div class="install" data-panel="cli">
       <div class="cmd"><span class="prompt">$</span><code>cargo install --path crates/dither-cli</code>
-        <button class="copy" data-copy="cargo install --path crates/dither-cli" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="copy" data-copy="cargo install --path crates/dither-cli" aria-label="Copy"><i class="iconoir-copy" aria-hidden="true"></i></button>
       </div>
       <div class="cmd"><span class="prompt">$</span><code>dither add area-chart</code>
-        <button class="copy" data-copy="dither add area-chart" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="copy" data-copy="dither add area-chart" aria-label="Copy"><i class="iconoir-copy" aria-hidden="true"></i></button>
       </div>
       <div class="cmd"><span class="prompt">$</span><code>dither list</code>
-        <button class="copy" data-copy="dither list" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="copy" data-copy="dither list" aria-label="Copy"><i class="iconoir-copy" aria-hidden="true"></i></button>
       </div>
     </div>
 
     <div class="install" data-panel="workspace" hidden>
       <div class="cmd"><span class="prompt">$</span><code>cargo run -p gallery</code>
-        <button class="copy" data-copy="cargo run -p gallery" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="copy" data-copy="cargo run -p gallery" aria-label="Copy"><i class="iconoir-copy" aria-hidden="true"></i></button>
       </div>
       <div class="cmd"><span class="prompt">$</span><code>cargo run -p gallery -- --scene donut</code>
-        <button class="copy" data-copy="cargo run -p gallery -- --scene donut" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="copy" data-copy="cargo run -p gallery -- --scene donut" aria-label="Copy"><i class="iconoir-copy" aria-hidden="true"></i></button>
       </div>
       <div class="cmd"><span class="prompt">$</span><code>cargo test --workspace</code>
-        <button class="copy" data-copy="cargo test --workspace" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="copy" data-copy="cargo test --workspace" aria-label="Copy"><i class="iconoir-copy" aria-hidden="true"></i></button>
       </div>
     </div>
 
     <div class="or">or</div>
 
     <button class="prompt-copy" id="copy-prompt" type="button">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><path d="M12 8.5 13.5 11 12 13.5 10.5 11Z"/></svg>
+      <i class="iconoir-copy" aria-hidden="true"></i>
       copy setup prompt
     </button>
     <p class="prompt-note">paste into Claude Code, Cursor, or any agent to install + wire up a chart</p>
@@ -484,9 +486,20 @@ Do not vendor the engine. Keep dither-core free of UI dependencies.</script>
       });
     });
 
-    function flash(button, doneClass) {
-      button.classList.add(doneClass || 'done');
-      setTimeout(function () { button.classList.remove(doneClass || 'done'); }, 1200);
+    function flash(button) {
+      var icon = button.querySelector('i');
+      if (icon) {
+        icon.classList.remove('iconoir-copy');
+        icon.classList.add('iconoir-check');
+      }
+      button.classList.add('done');
+      setTimeout(function () {
+        button.classList.remove('done');
+        if (icon) {
+          icon.classList.remove('iconoir-check');
+          icon.classList.add('iconoir-copy');
+        }
+      }, 1200);
     }
 
     document.querySelectorAll('.copy').forEach(function (button) {
