@@ -1,0 +1,10 @@
+[package]
+name = "dither-core"
+description = "Deterministic ordered-dither engine behind dither-kit-rune"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true

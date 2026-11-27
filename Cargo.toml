@@ -1,0 +1,29 @@
+[workspace]
+resolver = "3"
+members = ["crates/dither-core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+rust-version = "1.99"
+
+[workspace.dependencies]
+dither-core = { path = "crates/dither-core" }
+dither-kit-rune = { path = "crates/dither-kit-rune" }
+rune = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+
+# Rune patches vendored crates inside its own repository; Cargo does not inherit
+# `[patch]` from a dependency, so every app pins the same set at the same rev.
+[patch.crates-io]
+winit = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+sctk-adwaita = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+parley_engine = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+wgpu-hal = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+naga = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+accesskit_windows = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+accesskit_macos = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+accesskit_atspi_common = { git = "https://github.com/anomalyco/rune", rev = "dc64314b816afdd77689209f14647407034940cb" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
