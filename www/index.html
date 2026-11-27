@@ -111,7 +111,7 @@
     padding: 0;
   }
   .toggle:hover { color: var(--text); border-color: var(--dim); }
-  .toggle svg { width: 15px; height: 15px; }
+  .toggle i { font-size: 16px; line-height: 1; }
   :root[data-theme="dark"] .sun { display: none; }
   :root[data-theme="light"] .moon { display: none; }
 
@@ -218,6 +218,24 @@
     color: var(--muted);
   }
   .size { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .row-left .size { margin-left: 2px; }
+
+  .seg { display: flex; gap: 8px; }
+  .seg-btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1;
+    padding: 8px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    background: var(--chip);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .seg-btn.active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+
+  .code { margin: 24px 0 0; }
+  .code[hidden], .shot[hidden] { display: none; }
 
   pre {
     margin: 40px 0 0;
@@ -297,8 +315,8 @@
       </p>
     </div>
     <button class="toggle" id="theme" type="button" aria-label="Toggle colour scheme">
-      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
-      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+      <i class="iconoir-half-moon moon" aria-hidden="true"></i>
+      <i class="iconoir-sun-light sun" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -361,49 +379,161 @@
     <div class="leader"><h2>charts</h2><span class="rule"></span><span class="note">one surface, four dither variants</span></div>
 
     <div class="row-head">
-      <div class="row-left">area <span class="chip">area-chart</span></div>
-      <span class="size">900 × 520</span>
+      <div class="row-left">area <span class="chip">area-chart</span> <span class="size">900 × 520</span></div>
+      <div class="seg" data-item="area-chart">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="area-chart">
       <img data-dark="shots/area-dark.webp" data-light="shots/area-light.webp" loading="lazy"
            src="shots/area-dark.webp" width="1920" height="1280" alt="Area chart">
     </figure>
+    <pre class="code" data-code="area-chart" hidden><code><!-- code:area-chart -->// area chart — build once, keep the Chart in your state
+use dither_core::color::DitherColor;
+use dither_kit_rune::cartesian::ChartKind;
+use dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};
+
+pub fn chart() -&gt; Chart {
+    Chart::new(
+        ChartSpec::new(
+            (900.0, 520.0),
+            ["Jan", "Feb", "Mar", "Apr"].map(String::from).to_vec(),
+            vec![ChartSeries::new("value", DitherColor::Blue)],
+            vec![vec![12.0, 18.0, 15.0, 22.0]],
+        )
+        .kind(ChartKind::Area),
+    )
+}
+
+// in your view, forward pointer input; the app's state owns the chart
+//
+// chart.view(theme)
+//     .on_pointer_move_local(|state: &amp;mut App, p, _| state.chart.hover_at(p.x))
+//     .on_hover_change(|state: &amp;mut App, inside, _| {
+//         if !inside { state.chart.leave(); }
+//     })<!-- /code:area-chart --></code></pre>
 
     <div class="row-head">
-      <div class="row-left">bar <span class="chip">bar-chart</span></div>
-      <span class="size">900 × 520</span>
+      <div class="row-left">bar <span class="chip">bar-chart</span> <span class="size">900 × 520</span></div>
+      <div class="seg" data-item="bar-chart">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="bar-chart">
       <img data-dark="shots/bar-dark.webp" data-light="shots/bar-light.webp" loading="lazy"
            src="shots/bar-dark.webp" width="1920" height="1280" alt="Stacked bar chart">
     </figure>
+    <pre class="code" data-code="bar-chart" hidden><code><!-- code:bar-chart -->// bar chart — grouped by default, stacked when you say so
+use dither_core::color::DitherColor;
+use dither_core::stack::StackMode;
+use dither_kit_rune::cartesian::ChartKind;
+use dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};
+
+pub fn chart() -&gt; Chart {
+    Chart::new(
+        ChartSpec::new(
+            (900.0, 520.0),
+            ["Mon", "Tue", "Wed", "Thu"].map(String::from).to_vec(),
+            vec![
+                ChartSeries::new("builds", DitherColor::Green),
+                ChartSeries::new("deploys", DitherColor::Purple),
+            ],
+            vec![vec![42.0, 58.0, 61.0, 47.0], vec![31.0, 44.0, 39.0, 51.0]],
+        )
+        .kind(ChartKind::Bar)
+        .stack(StackMode::Stacked),
+    )
+}<!-- /code:bar-chart --></code></pre>
 
     <div class="row-head">
-      <div class="row-left">sparkline <span class="chip">spark-a</span></div>
-      <span class="size">900 × 300</span>
+      <div class="row-left">sparkline <span class="chip">spark-a</span> <span class="size">900 × 300</span></div>
+      <div class="seg" data-item="sparkline">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="sparkline">
       <img data-dark="shots/sparkline-dark.webp" data-light="shots/sparkline-light.webp" loading="lazy"
            src="shots/sparkline-dark.webp" width="1920" height="720" alt="Sparkline">
     </figure>
+    <pre class="code" data-code="sparkline" hidden><code><!-- code:sparkline -->// sparkline — the chart with its chrome turned off
+use dither_core::color::DitherColor;
+use dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};
+
+pub fn chart() -&gt; Chart {
+    let values = [3.0, 7.0, 5.0, 9.0, 8.0, 12.0, 10.0, 14.0, 11.0, 16.0];
+    let categories = (0..values.len()).map(|i| i.to_string()).collect();
+    Chart::new(
+        ChartSpec::new(
+            (900.0, 300.0),
+            categories,
+            vec![ChartSeries::new("value", DitherColor::Green)],
+            vec![values.to_vec()],
+        )
+        .sparkline(),
+    )
+}<!-- /code:sparkline --></code></pre>
 
     <div class="row-head">
-      <div class="row-left">donut <span class="chip">pie-chart</span></div>
-      <span class="size">640 × 560</span>
+      <div class="row-left">donut <span class="chip">pie-chart</span> <span class="size">640 × 560</span></div>
+      <div class="seg" data-item="donut">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="donut">
       <img data-dark="shots/donut-dark.webp" data-light="shots/donut-light.webp" loading="lazy"
            src="shots/donut-dark.webp" width="1920" height="1280" alt="Donut chart">
     </figure>
+    <pre class="code" data-code="donut" hidden><code><!-- code:donut -->// donut chart — inner radius is a fraction of the outer radius
+use dither_core::color::DitherColor;
+use dither_kit_rune::pie::{Pie, PieSeries, PieSpec};
+
+pub fn chart() -&gt; Pie {
+    Pie::new(
+        PieSpec::new(
+            (640.0, 560.0),
+            vec![
+                PieSeries::new("rust", 38.0, DitherColor::Orange),
+                PieSeries::new("typescript", 27.0, DitherColor::Blue),
+                PieSeries::new("go", 19.0, DitherColor::Green),
+                PieSeries::new("zig", 11.0, DitherColor::Purple),
+            ],
+        )
+        .inner(0.52),
+    )
+}<!-- /code:donut --></code></pre>
 
     <div class="row-head">
-      <div class="row-left">radar <span class="chip">radar-chart</span></div>
-      <span class="size">720 × 560</span>
+      <div class="row-left">radar <span class="chip">radar-chart</span> <span class="size">720 × 560</span></div>
+      <div class="seg" data-item="radar">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="radar">
       <img data-dark="shots/radar-dark.webp" data-light="shots/radar-light.webp" loading="lazy"
            src="shots/radar-dark.webp" width="1920" height="1280" alt="Radar chart">
     </figure>
+    <pre class="code" data-code="radar" hidden><code><!-- code:radar -->// radar chart — one value per axis, series-major
+use dither_core::color::DitherColor;
+use dither_kit_rune::radar::{Radar, RadarSeries, RadarSpec};
+
+pub fn chart() -&gt; Radar {
+    Radar::new(
+        RadarSpec::new(
+            (720.0, 560.0),
+            ["speed", "size", "docs", "tests", "perf"].map(String::from).to_vec(),
+            vec![
+                RadarSeries::new("v1", DitherColor::Blue),
+                RadarSeries::new("v2", DitherColor::Pink),
+            ],
+            vec![vec![7.0, 6.0, 5.0, 8.0, 6.0], vec![9.0, 8.0, 9.0, 7.0, 9.0]],
+        ),
+    )
+}<!-- /code:radar --></code></pre>
 
     <pre><code><span class="k">Chart::new</span>(ChartSpec::new((<span class="s">900, 520</span>), months, series, values)
     .kind(ChartKind::Area)
@@ -415,31 +545,79 @@
     <div class="leader"><h2>beyond charts</h2><span class="rule"></span><span class="note">standalone — none of these pull in the chart engine</span></div>
 
     <div class="row-head">
-      <div class="row-left">avatar <span class="chip">avatar</span></div>
-      <span class="size">8 × 92</span>
+      <div class="row-left">avatar <span class="chip">avatar</span> <span class="size">8 × 92</span></div>
+      <div class="seg" data-item="avatar">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="avatar">
       <img data-dark="shots/avatars-dark.webp" data-light="shots/avatars-light.webp" loading="lazy"
            src="shots/avatars-dark.webp" width="1920" height="440" alt="Eight generative avatars">
     </figure>
+    <pre class="code" data-code="avatar" hidden><code><!-- code:avatar -->// avatar — same name, same glyph, every time
+use dither_kit_rune::avatar::Avatar;
+
+pub fn avatar(name: &amp;str) -&gt; Avatar {
+    Avatar::new(name, 92.0)
+}
+
+// view: avatar.view()
+// hue:  Avatar::new("ada", 92.0).hue(210.0)
+// fold: .mirror(AvatarMirror::Horizontal)<!-- /code:avatar --></code></pre>
 
     <div class="row-head">
-      <div class="row-left">button <span class="chip">button</span></div>
-      <span class="size">4 × 200 × 56</span>
+      <div class="row-left">button <span class="chip">button</span> <span class="size">4 × 200 × 56</span></div>
+      <div class="seg" data-item="button">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="button">
       <img data-dark="shots/buttons-dark.webp" data-light="shots/buttons-light.webp" loading="lazy"
            src="shots/buttons-dark.webp" width="1920" height="440" alt="Four dithered buttons">
     </figure>
+    <pre class="code" data-code="button" hidden><code><!-- code:button -->// button — a real control; wire hover, press and the action yourself
+use dither_core::color::DitherColor;
+use dither_kit_rune::button::{ButtonSpec, DitherButton};
+
+pub fn button() -&gt; DitherButton {
+    DitherButton::new(ButtonSpec::new("save changes", (200.0, 56.0)).color(DitherColor::Blue))
+}
+
+// in your view:
+//
+// button.view(theme)
+//     .on_hover_change(|state: &amp;mut App, inside, _| state.button.hover(inside))
+//     .on_press(|state: &amp;mut App| state.save())<!-- /code:button --></code></pre>
 
     <div class="row-head">
-      <div class="row-left">gradient <span class="chip">gradient</span></div>
-      <span class="size">900 × 480</span>
+      <div class="row-left">gradient <span class="chip">gradient</span> <span class="size">900 × 480</span></div>
+      <div class="seg" data-item="gradient">
+        <button class="seg-btn active" type="button" data-view="preview">preview</button>
+        <button class="seg-btn" type="button" data-view="code">code</button>
+      </div>
     </div>
-    <figure class="shot">
+    <figure class="shot" data-shot="gradient">
       <img data-dark="shots/gradient-dark.webp" data-light="shots/gradient-light.webp" loading="lazy"
            src="shots/gradient-dark.webp" width="1920" height="1120" alt="Directional dithered gradient">
     </figure>
+    <pre class="code" data-code="gradient" hidden><code><!-- code:gradient -->// gradient — quantized directional wash
+use dither_core::color::DitherColor;
+use dither_core::gradient::{Direction, GradientSpec};
+use dither_kit_rune::gradient::DitherGradient;
+
+pub fn gradient() -&gt; DitherGradient {
+    DitherGradient::new(
+        (900.0, 480.0),
+        GradientSpec::new(DitherColor::Blue.fill())
+            .direction(Direction::Up)
+            .cell(3.0)
+            .opacity(0.9),
+    )
+}
+
+// two-tone: .to(DitherColor::Pink.fill())<!-- /code:gradient --></code></pre>
   </section>
 
   <section>
@@ -496,6 +674,32 @@ Do not vendor the engine. Keep dither-core free of UI dependencies.</script>
       localStorage.setItem('theme', next);
       paint(next);
     });
+
+    document.querySelectorAll('.seg').forEach(function (seg) {
+      var item = seg.dataset.item;
+      seg.querySelectorAll('.seg-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+          seg.querySelectorAll('.seg-btn').forEach(function (other) {
+            other.classList.toggle('active', other === button);
+          });
+          var showing = button.dataset.view === 'code';
+          document.querySelector('[data-shot="' + item + '"]').hidden = showing;
+          document.querySelector('[data-code="' + item + '"]').hidden = !showing;
+        });
+      });
+    });
+
+    var media = matchMedia('(prefers-color-scheme: light)');
+    var follow = function (event) {
+      if (!localStorage.getItem('theme')) {
+        paint(event.matches ? 'light' : 'dark');
+      }
+    };
+    if (media.addEventListener) {
+      media.addEventListener('change', follow);
+    } else if (media.addListener) {
+      media.addListener(follow);
+    }
 
     document.querySelectorAll('.tab').forEach(function (tab) {
       tab.addEventListener('click', function () {

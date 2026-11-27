@@ -7,7 +7,7 @@ pub fn chart() -> Chart {
     let categories = (0..values.len()).map(|i| i.to_string()).collect();
     Chart::new(
         ChartSpec::new(
-            (840.0, 180.0),
+            (900.0, 300.0),
             categories,
             vec![ChartSeries::new("value", DitherColor::Green)],
             vec![values.to_vec()],
