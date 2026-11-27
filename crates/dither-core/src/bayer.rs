@@ -10,6 +10,11 @@ pub fn threshold(x: i32, y: i32) -> f64 {
     (BAYER4[(y & 3) as usize][(x & 3) as usize] as f64 + 0.5) / 16.0
 }
 
+/// Raw matrix value over 16, the grayscale the gradient's threshold map uses.
+pub fn raw(x: i32, y: i32) -> f64 {
+    BAYER4[(y & 3) as usize][(x & 3) as usize] as f64 / 16.0
+}
+
 pub fn clamp01(t: f64) -> f64 {
     t.clamp(0.0, 1.0)
 }

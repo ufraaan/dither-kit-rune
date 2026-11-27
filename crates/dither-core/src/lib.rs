@@ -7,10 +7,13 @@
 //! toward positive infinity) because the engine is a faithful port of the
 //! upstream canvas implementation.
 
+pub mod avatar;
 pub mod bayer;
 pub mod bloom;
 pub mod color;
+pub mod gradient;
 pub mod paint;
+pub mod polar;
 pub mod rand;
 pub mod scales;
 pub mod stack;
@@ -86,6 +89,32 @@ impl Surface {
         self.rgba[i + 1] = over(color.g, self.rgba[i + 1]);
         self.rgba[i + 2] = over(color.b, self.rgba[i + 2]);
         self.rgba[i + 3] = js_round(out_a * 255.0).clamp(0.0, 255.0) as u8;
+    }
+
+    /// Stroke a line of single pixels between two points, clipped.
+    pub fn line(&mut self, x0: f64, y0: f64, x1: f64, y1: f64, color: color::Rgb, alpha: f64) {
+        let (mut x0, mut y0) = (js_round(x0) as i32, js_round(y0) as i32);
+        let (x1, y1) = (js_round(x1) as i32, js_round(y1) as i32);
+        let dx = (x1 - x0).abs();
+        let dy = -(y1 - y0).abs();
+        let sx = if x0 < x1 { 1 } else { -1 };
+        let sy = if y0 < y1 { 1 } else { -1 };
+        let mut err = dx + dy;
+        loop {
+            self.paint(x0, y0, color, alpha);
+            if x0 == x1 && y0 == y1 {
+                break;
+            }
+            let e2 = 2 * err;
+            if e2 >= dy {
+                err += dy;
+                x0 += sx;
+            }
+            if e2 <= dx {
+                err += dx;
+                y0 += sy;
+            }
+        }
     }
 
     /// Fill an axis-aligned rectangle in surface pixel space, clipped.
