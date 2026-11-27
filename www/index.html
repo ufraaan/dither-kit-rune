@@ -235,11 +235,30 @@
   pre .s { color: var(--green); }
   pre .k { color: var(--muted); }
 
-  .knobs { margin-top: 24px; display: grid; gap: 12px; }
-  .knob { display: flex; gap: 16px; align-items: center; }
-  .knob .chip { min-width: 96px; justify-content: center; display: inline-flex; }
-  .knob code { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
-  .knob code b { color: var(--green); font-weight: 400; }
+  .knobs {
+    width: 100%;
+    margin-top: 28px;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .knobs th {
+    text-align: left;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--dim);
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .knobs td {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    vertical-align: top;
+  }
+  .knobs td:first-child { width: 150px; color: var(--text); white-space: nowrap; }
+  .knobs tr:last-child td { border-bottom: 0; }
+  .knobs b { color: var(--green); font-weight: 400; }
 
   footer {
     margin-top: 120px;
@@ -261,7 +280,7 @@
     .top { padding-top: 56px; }
     section { padding-top: 72px; }
     .leader .note { display: none; }
-    .knob { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .knobs td:first-child { width: 104px; }
     .cmd { font-size: 12.5px; }
   }
 </style>
@@ -425,13 +444,16 @@
 
   <section>
     <div class="leader"><h2>knobs</h2><span class="rule"></span><span class="note">per-series, typed, no stringly reflection</span></div>
-    <div class="knobs">
-      <div class="knob"><span class="chip">variant</span><code><b>"gradient"</b> | <b>"dotted"</b> | <b>"hatched"</b> | <b>"solid"</b></code></div>
-      <div class="knob"><span class="chip">stack</span><code><b>"default"</b> | <b>"stacked"</b> | <b>"percent"</b></code></div>
-      <div class="knob"><span class="chip">colours</span><code>green blue purple pink orange red grey</code></div>
-      <div class="knob"><span class="chip">animate</span><code>entrance + replay, settles under reduced motion</code></div>
-      <div class="knob"><span class="chip">interactive</span><code><b>false</b> = decorative spark, no crosshair or tooltip</code></div>
-    </div>
+    <table class="knobs">
+      <thead><tr><th>option</th><th>values</th></tr></thead>
+      <tbody>
+        <tr><td>variant</td><td><b>"gradient"</b> | <b>"dotted"</b> | <b>"hatched"</b> | <b>"solid"</b></td></tr>
+        <tr><td>stack</td><td><b>"default"</b> | <b>"stacked"</b> | <b>"percent"</b></td></tr>
+        <tr><td>colours</td><td>green blue purple pink orange red grey</td></tr>
+        <tr><td>animate</td><td>entrance + replay, settles under reduced motion</td></tr>
+        <tr><td>interactive</td><td><b>false</b> = decorative spark, no crosshair or tooltip</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section>
