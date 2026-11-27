@@ -49,7 +49,11 @@ fn num(v: f64) -> f64 {
 /// Rows shorter than the longest series are treated as zero.
 pub fn compute_bands(series: &[Vec<f64>], mode: StackMode) -> Bands {
     if series.is_empty() {
-        return Bands { bands: Vec::new(), max: 1.0, min: 0.0 };
+        return Bands {
+            bands: Vec::new(),
+            max: 1.0,
+            min: 0.0,
+        };
     }
     let rows = series.iter().map(Vec::len).max().unwrap_or(0);
     let mut bands: Vec<Vec<[f64; 2]>> = series
@@ -77,7 +81,11 @@ pub fn compute_bands(series: &[Vec<f64>], mode: StackMode) -> Bands {
             let (head, tail) = bands.split_at_mut(i);
             let below = &head[i - 1];
             for (row, band) in tail[0].iter_mut().enumerate() {
-                let y0 = if below[row][1].is_nan() { below[row][0] } else { below[row][1] };
+                let y0 = if below[row][1].is_nan() {
+                    below[row][0]
+                } else {
+                    below[row][1]
+                };
                 band[0] = y0;
                 band[1] += y0;
             }
@@ -98,5 +106,9 @@ pub fn compute_bands(series: &[Vec<f64>], mode: StackMode) -> Bands {
         }
     }
     let flat = max == 0.0 && min == 0.0;
-    Bands { bands, max: if flat { 1.0 } else { max }, min }
+    Bands {
+        bands,
+        max: if flat { 1.0 } else { max },
+        min,
+    }
 }

@@ -168,7 +168,21 @@ fn every_painter_case_matches_the_upstream_canvas_bytes() {
 #[test]
 fn painting_stays_inside_the_buffer() {
     let mut surface = Surface::new(4, 4);
-    paint_column(&mut surface, -3, -5.0, 9.0, DitherColor::Red.fill(), &PaintOpts::default());
-    paint_column(&mut surface, 9, 1.0, 3.0, DitherColor::Red.fill(), &PaintOpts::default());
+    paint_column(
+        &mut surface,
+        -3,
+        -5.0,
+        9.0,
+        DitherColor::Red.fill(),
+        &PaintOpts::default(),
+    );
+    paint_column(
+        &mut surface,
+        9,
+        1.0,
+        3.0,
+        DitherColor::Red.fill(),
+        &PaintOpts::default(),
+    );
     assert_eq!(surface.rgba().len(), 4 * 4 * 4);
 }

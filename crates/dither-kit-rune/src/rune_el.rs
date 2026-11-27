@@ -12,7 +12,9 @@ pub struct SurfaceTexture {
 
 impl SurfaceTexture {
     pub fn new() -> Self {
-        Self { pixels: Pixels::new() }
+        Self {
+            pixels: Pixels::new(),
+        }
     }
 
     pub fn pixels(&self) -> &Pixels {
@@ -21,12 +23,14 @@ impl SurfaceTexture {
 
     /// Upload straight-alpha sRGB bytes from a painted surface.
     pub fn upload(&self, surface: &Surface) {
-        self.pixels.set(surface.cols(), surface.rows(), surface.rgba().to_vec());
+        self.pixels
+            .set(surface.cols(), surface.rows(), surface.rgba().to_vec());
     }
 
     /// Upload by taking the buffer, avoiding a copy on one-shot renders.
     pub fn upload_owned(&self, surface: Surface) {
-        self.pixels.set(surface.cols(), surface.rows(), surface.into_rgba());
+        self.pixels
+            .set(surface.cols(), surface.rows(), surface.into_rgba());
     }
 
     /// The crisp, pixel-snapped element showing this surface.

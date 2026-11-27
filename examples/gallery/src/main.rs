@@ -2,15 +2,15 @@
 //! `cargo run -p gallery` opens the window; `-- --snap gallery.png` renders it
 //! headless.
 
+use dither_core::Surface;
 use dither_core::bayer::CELL;
+use dither_core::bayer::backing_size;
 use dither_core::color::DitherColor;
 use dither_core::paint::{PaintOpts, Variant, paint_column};
-use dither_core::Surface;
-use dither_core::bayer::backing_size;
 use dither_kit_rune::cartesian::{RenderOpts, Series, render};
 use dither_kit_rune::rune_el::SurfaceTexture;
 use rune::tok::{self, type_};
-use rune::{AppSpec, Cx, El, col, el, row, text};
+use rune::{AppSpec, Cx, El, col, row, text};
 
 struct State {
     chart: SurfaceTexture,
@@ -26,9 +26,15 @@ fn chart() -> SurfaceTexture {
     let (cols, rows) = backing_size(560.0, 220.0);
     let mut surface = Surface::new(cols, rows);
     let series = [
-        Series::new((0..28).map(|i| wave(i, 0.0)).collect::<Vec<_>>(), DitherColor::Blue.fill()),
-        Series::new((0..28).map(|i| wave(i, 2.2)).collect::<Vec<_>>(), DitherColor::Orange.fill())
-            .variant(Variant::Dotted),
+        Series::new(
+            (0..28).map(|i| wave(i, 0.0)).collect::<Vec<_>>(),
+            DitherColor::Blue.fill(),
+        ),
+        Series::new(
+            (0..28).map(|i| wave(i, 2.2)).collect::<Vec<_>>(),
+            DitherColor::Orange.fill(),
+        )
+        .variant(Variant::Dotted),
     ];
     render(&mut surface, 220.0, &series, &RenderOpts::default());
     let texture = SurfaceTexture::new();
@@ -53,9 +59,15 @@ fn init() -> State {
     State {
         chart: chart(),
         swatches: [
-            (Variant::Gradient, swatch(Variant::Gradient, DitherColor::Green)),
+            (
+                Variant::Gradient,
+                swatch(Variant::Gradient, DitherColor::Green),
+            ),
             (Variant::Dotted, swatch(Variant::Dotted, DitherColor::Blue)),
-            (Variant::Hatched, swatch(Variant::Hatched, DitherColor::Purple)),
+            (
+                Variant::Hatched,
+                swatch(Variant::Hatched, DitherColor::Purple),
+            ),
             (Variant::Solid, swatch(Variant::Solid, DitherColor::Pink)),
         ],
     }
@@ -66,13 +78,17 @@ fn view(s: &State, _: &mut Cx<State>) -> El {
     let heading = text("Dither Kit").font(type_::TITLE).color(t.text);
     let sub = text("ordered-dither charts, painted natively in Rune").color(t.text_secondary);
     let chart = s.chart.el().key("chart").size(560.0, 220.0);
-    let swatches = s.swatches.iter().fold(row().gap(16.0), |r, (variant, texture)| {
-        r.child(
-            col().gap(6.0)
-                .child(texture.el().size(64.0, 64.0).radius(6.0))
-                .child(text(variant.name()).color(t.text_secondary)),
-        )
-    });
+    let swatches = s
+        .swatches
+        .iter()
+        .fold(row().gap(16.0), |r, (variant, texture)| {
+            r.child(
+                col()
+                    .gap(6.0)
+                    .child(texture.el().size(64.0, 64.0).radius(6.0))
+                    .child(text(variant.name()).color(t.text_secondary)),
+            )
+        });
     col()
         .w_full()
         .h_full()
@@ -102,7 +118,15 @@ mod tests {
         let state = init();
         let (cols, rows) = state.chart.pixels().size();
         assert_eq!((cols, rows), backing_size(560.0, 220.0));
-        let mut rt = Runtime::new(init(), view, (624.0, 470.0), Env { system_dark: true, scale: 2.0 });
+        let mut rt = Runtime::new(
+            init(),
+            view,
+            (624.0, 470.0),
+            Env {
+                system_dark: true,
+                scale: 2.0,
+            },
+        );
         rt.frame(0.0);
         assert!(rt.find("chart").is_some());
     }

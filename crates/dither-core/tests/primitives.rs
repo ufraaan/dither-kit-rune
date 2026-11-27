@@ -62,7 +62,10 @@ fn hue_fill_matches_hsl_85_58() {
 fn named_palette_fills_match_upstream() {
     assert_eq!(DitherColor::Blue.fill(), Rgb::new(53, 143, 243));
     assert_eq!(DitherColor::Grey.fill(), Rgb::new(92, 92, 100));
-    assert_eq!(fill_of(PixelColor::Named(DitherColor::Green)), Rgb::new(40, 210, 110));
+    assert_eq!(
+        fill_of(PixelColor::Named(DitherColor::Green)),
+        Rgb::new(40, 210, 110)
+    );
     assert_eq!(DitherColor::from_name("purple"), Some(DitherColor::Purple));
     assert_eq!(DitherColor::from_name("mauve"), None);
 }
@@ -96,7 +99,10 @@ fn backing_size_halves_points_and_clamps() {
 
 #[test]
 fn resample_matches_linear_interpolation() {
-    assert_eq!(resample(&[0.0, 10.0, 30.0, 5.0], 7), vec![0.0, 5.0, 10.0, 20.0, 30.0, 17.5, 5.0]);
+    assert_eq!(
+        resample(&[0.0, 10.0, 30.0, 5.0], 7),
+        vec![0.0, 5.0, 10.0, 20.0, 30.0, 17.5, 5.0]
+    );
     assert_eq!(resample(&[], 4), vec![0.0; 4]);
     assert_eq!(resample(&[7.0], 5), vec![7.0, 7.0, 7.0, 7.0, 0.0]);
 }
@@ -140,7 +146,12 @@ fn linear_scale_includes_zero_and_nices_like_d3() {
     let flat = LinearScale::new(0.0, 0.0, 100.0);
     assert_eq!(flat.domain(), (0.0, 1.0));
 
-    assert_eq!(LinearScale::new(0.0, 52.0, 200.0).ticks(10), vec![0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0]);
+    assert_eq!(
+        LinearScale::new(0.0, 52.0, 200.0).ticks(10),
+        vec![
+            0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0
+        ]
+    );
 }
 
 #[test]
@@ -153,7 +164,10 @@ fn default_stacking_sits_every_series_on_zero() {
 
 #[test]
 fn stacked_bands_accumulate_positives_and_negatives() {
-    let bands = compute_bands(&[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]], StackMode::Stacked);
+    let bands = compute_bands(
+        &[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]],
+        StackMode::Stacked,
+    );
     assert_eq!(bands.bands[0], vec![[0.0, 1.0], [0.0, 2.0], [0.0, 3.0]]);
     assert_eq!(bands.bands[1], vec![[1.0, 5.0], [2.0, 7.0], [3.0, 9.0]]);
     assert_eq!(bands.max, 9.0);
@@ -165,7 +179,10 @@ fn stacked_bands_accumulate_positives_and_negatives() {
 
 #[test]
 fn percent_stacking_normalizes_each_row() {
-    let bands = compute_bands(&[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]], StackMode::Percent);
+    let bands = compute_bands(
+        &[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]],
+        StackMode::Percent,
+    );
     close(bands.bands[0][0][1], 0.2);
     close(bands.bands[1][0][1], 1.0);
     close(bands.bands[0][1][1], 2.0 / 7.0);

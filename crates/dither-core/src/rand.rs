@@ -18,7 +18,9 @@ pub struct XorShift32 {
 
 impl XorShift32 {
     pub fn new(seed: u32) -> Self {
-        Self { state: if seed == 0 { 0x9e37_79b9 } else { seed } }
+        Self {
+            state: if seed == 0 { 0x9e37_79b9 } else { seed },
+        }
     }
 
     pub fn next_f64(&mut self) -> f64 {

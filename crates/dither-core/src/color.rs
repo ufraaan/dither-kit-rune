@@ -75,7 +75,9 @@ impl DitherColor {
         match self {
             DitherColor::Green => color!(Green, [40, 210, 110], [150, 255, 180], [200, 255, 220]),
             DitherColor::Blue => color!(Blue, [53, 143, 243], [150, 200, 255], [205, 228, 255]),
-            DitherColor::Purple => color!(Purple, [150, 110, 255], [200, 175, 255], [225, 210, 255]),
+            DitherColor::Purple => {
+                color!(Purple, [150, 110, 255], [200, 175, 255], [225, 210, 255])
+            }
             DitherColor::Pink => color!(Pink, [240, 90, 190], [255, 170, 220], [255, 205, 235]),
             DitherColor::Orange => color!(Orange, [255, 150, 50], [255, 195, 130], [255, 220, 175]),
             DitherColor::Red => color!(Red, [240, 70, 70], [255, 150, 140], [255, 195, 185]),

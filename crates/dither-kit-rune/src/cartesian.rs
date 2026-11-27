@@ -1,10 +1,10 @@
 //! Chart data → backing surface, mirroring upstream's canvas target pass.
 
+use dither_core::Surface;
 use dither_core::color::Rgb;
 use dither_core::paint::{PaintOpts, Variant, paint_column, resample};
 use dither_core::scales::LinearScale;
 use dither_core::stack::{StackMode, compute_bands};
-use dither_core::Surface;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum SeriesKind {
@@ -23,7 +23,12 @@ pub struct Series {
 
 impl Series {
     pub fn new(values: impl Into<Vec<f64>>, fill: Rgb) -> Self {
-        Self { values: values.into(), fill, variant: Variant::Gradient, kind: SeriesKind::Area }
+        Self {
+            values: values.into(),
+            fill,
+            variant: Variant::Gradient,
+            kind: SeriesKind::Area,
+        }
     }
 
     pub fn variant(mut self, variant: Variant) -> Self {
@@ -50,7 +55,12 @@ pub struct RenderOpts {
 
 impl Default for RenderOpts {
     fn default() -> Self {
-        Self { stack: StackMode::None, intensity: 0.0, emphasis: None, reveal: 1.0 }
+        Self {
+            stack: StackMode::None,
+            intensity: 0.0,
+            emphasis: None,
+            reveal: 1.0,
+        }
     }
 }
 
@@ -72,7 +82,9 @@ pub fn render(surface: &mut Surface, plot_height: f64, series: &[Series], opts: 
     let reveal_cols = (opts.reveal * cols as f64).ceil();
 
     for (i, spec) in series.iter().enumerate() {
-        let Some(band) = bands.bands.get(i) else { continue };
+        let Some(band) = bands.bands.get(i) else {
+            continue;
+        };
         let is_line = spec.kind == SeriesKind::Line;
         let top: Vec<f64> = band.iter().map(|b| y.y(b[1]) / h * (rows - 1.0)).collect();
         let floor: Vec<f64> = band

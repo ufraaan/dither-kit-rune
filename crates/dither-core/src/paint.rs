@@ -49,7 +49,13 @@ pub struct PaintOpts {
 
 impl Default for PaintOpts {
     fn default() -> Self {
-        Self { variant: Variant::Gradient, intensity: 0.0, dim: 1.0, stacked: false, sparse: 0.0 }
+        Self {
+            variant: Variant::Gradient,
+            intensity: 0.0,
+            dim: 1.0,
+            stacked: false,
+            sparse: 0.0,
+        }
     }
 }
 
@@ -97,8 +103,11 @@ pub fn paint_column(
         surface.paint(x, t, fill, BORDER_ALPHA * opts.dim);
         return;
     }
-    let bias = if opts.variant == Variant::Dotted { 0.12 } else { 0.0 }
-        + if opts.stacked { 0.2 } else { 0.0 }
+    let bias = if opts.variant == Variant::Dotted {
+        0.12
+    } else {
+        0.0
+    } + if opts.stacked { 0.2 } else { 0.0 }
         - opts.sparse;
     for y in t..f {
         let mut density = (y - t) as f64 / depth as f64;
@@ -133,7 +142,10 @@ pub fn resample(src: &[f64], cols: usize) -> Vec<f64> {
         let f = t - i;
         let i = i as usize;
         let a = src.get(i).copied().unwrap_or(0.0);
-        let b = src.get((i + 1).min(src.len().saturating_sub(1))).copied().unwrap_or(a);
+        let b = src
+            .get((i + 1).min(src.len().saturating_sub(1)))
+            .copied()
+            .unwrap_or(a);
         *slot = a + (b - a) * f;
     }
     out

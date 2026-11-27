@@ -34,7 +34,11 @@ pub struct Surface {
 
 impl Surface {
     pub fn new(cols: u32, rows: u32) -> Self {
-        Self { cols, rows, rgba: vec![0; cols as usize * rows as usize * 4] }
+        Self {
+            cols,
+            rows,
+            rgba: vec![0; cols as usize * rows as usize * 4],
+        }
     }
 
     pub fn cols(&self) -> u32 {

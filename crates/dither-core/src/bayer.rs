@@ -3,8 +3,7 @@
 use crate::js_round;
 
 /// Raw 4×4 ordered (Bayer) matrix, exactly as upstream.
-pub const BAYER4: [[u8; 4]; 4] =
-    [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+pub const BAYER4: [[u8; 4]; 4] = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
 
 /// Normalized threshold `(value + 0.5) / 16` at surface pixel `(x, y)`.
 pub fn threshold(x: i32, y: i32) -> f64 {
@@ -12,13 +11,7 @@ pub fn threshold(x: i32, y: i32) -> f64 {
 }
 
 pub fn clamp01(t: f64) -> f64 {
-    if t < 0.0 {
-        0.0
-    } else if t > 1.0 {
-        1.0
-    } else {
-        t
-    }
+    t.clamp(0.0, 1.0)
 }
 
 /// CSS px per dither cell.

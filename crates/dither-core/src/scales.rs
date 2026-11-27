@@ -9,7 +9,10 @@ pub struct PointScale {
 
 impl PointScale {
     pub fn new(len: usize, width: f64) -> Self {
-        Self { len, step: width / (len.saturating_sub(1)).max(1) as f64 }
+        Self {
+            len,
+            step: width / (len.saturating_sub(1)).max(1) as f64,
+        }
     }
 
     pub fn position(&self, i: usize) -> f64 {
@@ -36,11 +39,15 @@ impl BandScale {
 
     pub fn new(len: usize, width: f64) -> Self {
         let n = len as f64;
-        let step =
-            width / (n - Self::PADDING_INNER + Self::PADDING_OUTER * 2.0).max(1.0);
+        let step = width / (n - Self::PADDING_INNER + Self::PADDING_OUTER * 2.0).max(1.0);
         let bandwidth = step * (1.0 - Self::PADDING_INNER);
         let offset = (width - step * (n - Self::PADDING_INNER)) * 0.5;
-        Self { len, step, bandwidth, offset }
+        Self {
+            len,
+            step,
+            bandwidth,
+            offset,
+        }
     }
 
     /// Left edge of band `i`.
@@ -85,7 +92,7 @@ pub fn nearest_index(px: f64, len: usize, plot_width: f64) -> usize {
 
 const E10: f64 = 7.071_067_811_865_475_5;
 const E5: f64 = 3.162_277_660_168_379_5;
-const E2: f64 = 1.414_213_562_373_095_1;
+const E2: f64 = std::f64::consts::SQRT_2;
 
 /// d3-array `tickIncrement`.
 pub fn tick_increment(start: f64, stop: f64, count: usize) -> f64 {

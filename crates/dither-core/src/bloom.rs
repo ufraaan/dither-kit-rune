@@ -45,15 +45,24 @@ impl BloomLevel {
     pub const fn config(self) -> Option<BloomConfig> {
         match self {
             BloomLevel::Off => None,
-            BloomLevel::Low => {
-                Some(BloomConfig { blur: 3.0, brightness: 1.35, opacity: 0.7, saturate: 1.4 })
-            }
-            BloomLevel::High => {
-                Some(BloomConfig { blur: 5.0, brightness: 1.5, opacity: 0.78, saturate: 1.5 })
-            }
-            BloomLevel::Aura => {
-                Some(BloomConfig { blur: 15.0, brightness: 2.9, opacity: 0.1, saturate: 3.0 })
-            }
+            BloomLevel::Low => Some(BloomConfig {
+                blur: 3.0,
+                brightness: 1.35,
+                opacity: 0.7,
+                saturate: 1.4,
+            }),
+            BloomLevel::High => Some(BloomConfig {
+                blur: 5.0,
+                brightness: 1.5,
+                opacity: 0.78,
+                saturate: 1.5,
+            }),
+            BloomLevel::Aura => Some(BloomConfig {
+                blur: 15.0,
+                brightness: 2.9,
+                opacity: 0.1,
+                saturate: 3.0,
+            }),
         }
     }
 }
