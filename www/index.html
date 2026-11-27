@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dither-kit-rune</title>
 <meta name="description" content="A native Rust port of Dither Kit for the Rune UI framework: ordered-dither charts, avatars, buttons and gradients from one deterministic engine.">
+<link rel="alternate" type="text/markdown" href="index.md">
+<link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
 <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
@@ -94,26 +96,24 @@
     color: var(--text);
   }
   .sub { margin: 14px 0 0; color: var(--muted); font-size: 16px; line-height: 26px; max-width: 600px; }
+  .meta { margin: 10px 0 0; font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--dim); }
   .sub a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
   .sub a:hover { color: var(--text); border-bottom-color: var(--text); }
 
-  .toggle {
-    flex: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--line);
-    background: var(--chip);
-    color: var(--muted);
+  .scheme { display: flex; gap: 2px; align-items: center; }
+  .scheme button {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1;
+    padding: 7px 11px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--dim);
     cursor: pointer;
-    display: grid;
-    place-items: center;
-    padding: 0;
   }
-  .toggle:hover { color: var(--text); border-color: var(--dim); }
-  .toggle i { font-size: 16px; line-height: 1; }
-  :root[data-theme="dark"] .sun { display: none; }
-  :root[data-theme="light"] .moon { display: none; }
+  .scheme button:hover { color: var(--text); }
+  .scheme button[aria-pressed="true"] { background: var(--chip); color: var(--text); }
 
   .intro { margin: 44px 0 0; color: var(--muted); max-width: 600px; }
   .intro strong { color: var(--text); font-weight: 400; }
@@ -234,8 +234,26 @@
   }
   .seg-btn.active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 
-  .code { margin: 24px 0 0; }
+  .code { margin: 24px 0 0; position: relative; padding-right: 44px; }
   .code[hidden], .shot[hidden] { display: none; }
+  .code-copy { position: absolute; top: 10px; right: 10px; }
+  .code code { background: none; font: inherit; padding: 0; }
+
+  .token.comment, .token.prolog, .token.cdata { color: var(--dim); font-style: italic; }
+  .token.string, .token.char, .token.attr-value { color: var(--green); }
+  .token.keyword, .token.boolean, .token.important { color: #c792ea; }
+  .token.function, .token.macro, .token.class-name, .token.builtin { color: #82aaff; }
+  .token.number { color: #f78c6c; }
+  .token.punctuation, .token.operator { color: var(--muted); }
+  .token.attr-name, .token.property { color: var(--text); }
+  :root[data-theme="light"] .token.keyword,
+  :root[data-theme="light"] .token.boolean,
+  :root[data-theme="light"] .token.important { color: #7c3aed; }
+  :root[data-theme="light"] .token.function,
+  :root[data-theme="light"] .token.macro,
+  :root[data-theme="light"] .token.class-name,
+  :root[data-theme="light"] .token.builtin { color: #1f6feb; }
+  :root[data-theme="light"] .token.number { color: #b45309; }
 
   pre {
     margin: 40px 0 0;
@@ -309,15 +327,16 @@
     <div>
       <h1>dither-kit-rune</h1>
       <p class="sub">
-        a native <a href="https://github.com/anomalyco/rune" rel="noreferrer">rune</a> port of
-        <a href="https://tripwire.sh/dither-kit" rel="noreferrer">dither-kit</a> — five chart types,
+        a native <a href="https://github.com/anomalyco/rune" target="_blank" rel="noreferrer noopener">rune</a> port of
+        <a href="https://tripwire.sh/dither-kit" target="_blank" rel="noreferrer noopener">dither-kit</a> — five chart types,
         generative avatars, buttons, and gradient washes on one tiny deterministic engine
       </p>
+      <p class="meta">rune only · macOS only · pre-release</p>
     </div>
-    <button class="toggle" id="theme" type="button" aria-label="Toggle colour scheme">
-      <i class="iconoir-half-moon moon" aria-hidden="true"></i>
-      <i class="iconoir-sun-light sun" aria-hidden="true"></i>
-    </button>
+    <div class="scheme" role="group" aria-label="Colour scheme">
+      <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
+      <button type="button" data-theme-set="light" aria-pressed="false">light</button>
+    </div>
   </div>
 
   <p class="intro">
@@ -325,7 +344,6 @@
     hold up in <strong>light and dark</strong>, entrance animations, a gliding scrub,
     legend selection, and the same alpha-tier model across every component.
   </p>
-  <p class="hint">scrub it, hover a legend entry to isolate that series, arrow keys inspect</p>
 
   <figure class="shot">
     <img data-dark="shots/area-dark.webp" data-light="shots/area-light.webp"
@@ -389,7 +407,7 @@
       <img data-dark="shots/area-dark.webp" data-light="shots/area-light.webp" loading="lazy"
            src="shots/area-dark.webp" width="1920" height="1280" alt="Area chart">
     </figure>
-    <pre class="code" data-code="area-chart" hidden><code><!-- code:area-chart -->// area chart — build once, keep the Chart in your state
+    <pre class="code" data-code="area-chart" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:area-chart -->// area chart — build once, keep the Chart in your state
 use dither_core::color::DitherColor;
 use dither_kit_rune::cartesian::ChartKind;
 use dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};
@@ -425,7 +443,7 @@ pub fn chart() -&gt; Chart {
       <img data-dark="shots/bar-dark.webp" data-light="shots/bar-light.webp" loading="lazy"
            src="shots/bar-dark.webp" width="1920" height="1280" alt="Stacked bar chart">
     </figure>
-    <pre class="code" data-code="bar-chart" hidden><code><!-- code:bar-chart -->// bar chart — grouped by default, stacked when you say so
+    <pre class="code" data-code="bar-chart" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:bar-chart -->// bar chart — grouped by default, stacked when you say so
 use dither_core::color::DitherColor;
 use dither_core::stack::StackMode;
 use dither_kit_rune::cartesian::ChartKind;
@@ -458,7 +476,7 @@ pub fn chart() -&gt; Chart {
       <img data-dark="shots/sparkline-dark.webp" data-light="shots/sparkline-light.webp" loading="lazy"
            src="shots/sparkline-dark.webp" width="1920" height="720" alt="Sparkline">
     </figure>
-    <pre class="code" data-code="sparkline" hidden><code><!-- code:sparkline -->// sparkline — the chart with its chrome turned off
+    <pre class="code" data-code="sparkline" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:sparkline -->// sparkline — the chart with its chrome turned off
 use dither_core::color::DitherColor;
 use dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};
 
@@ -487,7 +505,7 @@ pub fn chart() -&gt; Chart {
       <img data-dark="shots/donut-dark.webp" data-light="shots/donut-light.webp" loading="lazy"
            src="shots/donut-dark.webp" width="1920" height="1280" alt="Donut chart">
     </figure>
-    <pre class="code" data-code="donut" hidden><code><!-- code:donut -->// donut chart — inner radius is a fraction of the outer radius
+    <pre class="code" data-code="donut" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:donut -->// donut chart — inner radius is a fraction of the outer radius
 use dither_core::color::DitherColor;
 use dither_kit_rune::pie::{Pie, PieSeries, PieSpec};
 
@@ -517,7 +535,7 @@ pub fn chart() -&gt; Pie {
       <img data-dark="shots/radar-dark.webp" data-light="shots/radar-light.webp" loading="lazy"
            src="shots/radar-dark.webp" width="1920" height="1280" alt="Radar chart">
     </figure>
-    <pre class="code" data-code="radar" hidden><code><!-- code:radar -->// radar chart — one value per axis, series-major
+    <pre class="code" data-code="radar" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:radar -->// radar chart — one value per axis, series-major
 use dither_core::color::DitherColor;
 use dither_kit_rune::radar::{Radar, RadarSeries, RadarSpec};
 
@@ -555,7 +573,7 @@ pub fn chart() -&gt; Radar {
       <img data-dark="shots/avatars-dark.webp" data-light="shots/avatars-light.webp" loading="lazy"
            src="shots/avatars-dark.webp" width="1920" height="440" alt="Eight generative avatars">
     </figure>
-    <pre class="code" data-code="avatar" hidden><code><!-- code:avatar -->// avatar — same name, same glyph, every time
+    <pre class="code" data-code="avatar" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:avatar -->// avatar — same name, same glyph, every time
 use dither_kit_rune::avatar::Avatar;
 
 pub fn avatar(name: &amp;str) -&gt; Avatar {
@@ -577,7 +595,7 @@ pub fn avatar(name: &amp;str) -&gt; Avatar {
       <img data-dark="shots/buttons-dark.webp" data-light="shots/buttons-light.webp" loading="lazy"
            src="shots/buttons-dark.webp" width="1920" height="440" alt="Four dithered buttons">
     </figure>
-    <pre class="code" data-code="button" hidden><code><!-- code:button -->// button — a real control; wire hover, press and the action yourself
+    <pre class="code" data-code="button" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:button -->// button — a real control; wire hover, press and the action yourself
 use dither_core::color::DitherColor;
 use dither_kit_rune::button::{ButtonSpec, DitherButton};
 
@@ -602,7 +620,7 @@ pub fn button() -&gt; DitherButton {
       <img data-dark="shots/gradient-dark.webp" data-light="shots/gradient-light.webp" loading="lazy"
            src="shots/gradient-dark.webp" width="1920" height="1120" alt="Directional dithered gradient">
     </figure>
-    <pre class="code" data-code="gradient" hidden><code><!-- code:gradient -->// gradient — quantized directional wash
+    <pre class="code" data-code="gradient" hidden><button class="copy code-copy" type="button" aria-label="Copy code"><i class="iconoir-copy" aria-hidden="true"></i></button><code class="language-rust"><!-- code:gradient -->// gradient — quantized directional wash
 use dither_core::color::DitherColor;
 use dither_core::gradient::{Direction, GradientSpec};
 use dither_kit_rune::gradient::DitherGradient;
@@ -643,8 +661,8 @@ pub fn gradient() -&gt; DitherGradient {
   </section>
 
   <footer>
-    <span>dither-kit-rune · <a href="LICENSE">MIT</a> · macOS</span>
-    <span>built on the shoulders of <a href="https://github.com/Boring-Software-Inc/dither-kit" rel="noreferrer">Dither Kit</a> · powered by <a href="https://github.com/anomalyco/rune" rel="noreferrer">Rune</a></span>
+    <span>dither-kit-rune · <a href="LICENSE">MIT</a> · macOS only · Rune only</span>
+    <span>built on the shoulders of <a href="https://github.com/Boring-Software-Inc/dither-kit" target="_blank" rel="noreferrer noopener">Dither Kit</a> · powered by <a href="https://github.com/anomalyco/rune" target="_blank" rel="noreferrer noopener">Rune</a></span>
   </footer>
 </div>
 
@@ -657,6 +675,8 @@ pub fn gradient() -&gt; DitherGradient {
 
 Do not vendor the engine. Keep dither-core free of UI dependencies.</script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
 <script>
   (function () {
     var root = document.documentElement;
@@ -666,13 +686,17 @@ Do not vendor the engine. Keep dither-core free of UI dependencies.</script>
       document.querySelectorAll('img[data-dark]').forEach(function (img) {
         img.src = theme === 'light' ? img.dataset.light : img.dataset.dark;
       });
+      document.querySelectorAll('[data-theme-set]').forEach(function (button) {
+        button.setAttribute('aria-pressed', String(button.dataset.themeSet === theme));
+      });
     }
     paint(root.dataset.theme);
 
-    document.getElementById('theme').addEventListener('click', function () {
-      var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', next);
-      paint(next);
+    document.querySelectorAll('[data-theme-set]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        localStorage.setItem('theme', button.dataset.themeSet);
+        paint(button.dataset.themeSet);
+      });
     });
 
     document.querySelectorAll('.seg').forEach(function (seg) {
@@ -731,6 +755,15 @@ Do not vendor the engine. Keep dither-core free of UI dependencies.</script>
     document.querySelectorAll('.copy').forEach(function (button) {
       button.addEventListener('click', function () {
         copy(button.dataset.copy, function () { flash(button); });
+      });
+    });
+
+    document.querySelectorAll('.code-copy').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var code = button.parentElement.querySelector('code');
+        if (code) {
+          copy(code.innerText, function () { flash(button); });
+        }
       });
     });
 

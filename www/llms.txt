@@ -1,0 +1,45 @@
+# dither-kit-rune
+
+> A native Rust port of Dither Kit for the Rune UI framework: ordered-dither charts, generative avatars, dithered buttons and gradient washes from one deterministic engine. The pure engine lives in `dither-core`; the Rune integration and builders live in `dither-kit-rune`.
+
+Rune-specific and macOS-only for now.
+
+Everything on this site is public. No page, asset or endpoint is blocked for crawlers, LLMs or agents.
+
+## Pages
+
+- [Landing page](/index.html): overview, screenshots, install flow and preview/code panels.
+- [Markdown version](/index.md): the same content as plain text.
+
+## Registry
+
+- [Registry index](/r/index.json): every item, version, licence and source.
+- [Area chart](/r/area-chart.json)
+- [Bar chart](/r/bar-chart.json)
+- [Sparkline](/r/sparkline.json)
+- [Donut](/r/donut.json)
+- [Radar](/r/radar.json)
+- [Avatar](/r/avatar.json)
+- [Button](/r/button.json)
+- [Gradient](/r/gradient.json)
+- [Setup prompt](/r/prompt.txt): the agent install prompt.
+
+## Install
+
+```sh
+cargo install --path crates/dither-cli
+dither add area-chart
+dither list
+```
+
+or run the workspace gallery:
+
+```sh
+cargo run -p gallery
+cargo run -p gallery -- --scene donut
+```
+
+## Source
+
+- [Dither Kit upstream](https://github.com/Boring-Software-Inc/dither-kit)
+- [Rune](https://github.com/anomalyco/rune)
