@@ -205,6 +205,24 @@ fn radar_chart(size: (f32, f32)) -> Radar {
     )
 }
 
+pub fn canvas(state: &State) -> rune::Color {
+    if state.dark {
+        rune::Color {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+            a: 1.0,
+        }
+    } else {
+        rune::Color {
+            r: 1.0,
+            g: 1.0,
+            b: 1.0,
+            a: 1.0,
+        }
+    }
+}
+
 pub const AVATAR_NAMES: [&str; 8] = [
     "ada",
     "Ada Lovelace",

@@ -1,6 +1,6 @@
 # dither-kit-rune
 
-A native Rust port of [Dither Kit](https://github.com/sortedcord/dither-kit) for the
+A native Rust port of [Dither Kit](https://github.com/Boring-Software-Inc/dither-kit) for the
 [Rune](https://github.com/anomalyco/rune) UI framework. Unofficial; see [NOTICE.md](NOTICE.md).
 
 macOS is the only supported target for now.
@@ -11,8 +11,11 @@ macOS is the only supported target for now.
 | --- | --- |
 | `crates/dither-core` | Deterministic engine: palette, Bayer painter, scales, stacking, RGBA surface. No UI dependency. |
 | `crates/dither-kit-rune` | Rune integration: data → surface, surface → nearest-neighbor `Pixels`. |
-| `examples/gallery` | Deterministic scene; renders headless to PNG. |
+| `examples/gallery` | Deterministic scenes; renders headless to PNG. |
+| `crates/dither-cli` | `dither` — lists registry items, scaffolds a starter module, emits the registry JSON. |
+| `registry.json` + `registry/` | Component manifest and starter snippets, served as JSON from `www/r/`. |
 | `crates/dither-core/tests/fixtures` | Byte-for-byte painter fixtures generated from the pinned upstream TypeScript. |
+| `www/` | Landing page, WebP captures and the built registry. |
 
 ## What works
 
@@ -46,6 +49,20 @@ cwebp -q 86 /tmp/area.png -o www/shots/area-dark.webp
 ```
 
 Bloom is configured in `dither_core::bloom` but not yet drawn as a Rune layer.
+
+## Install and registry
+
+```sh
+cargo install --path crates/dither-cli
+dither list                 # components in registry.json
+dither add area-chart       # writes dither/area_chart.rs and prints the dependency
+dither prompt               # the agent setup prompt
+dither build --out www/r    # regenerate the registry JSON the site serves
+```
+
+`dither add` scaffolds a starter module; it never vendors the engine. Add
+`dither-kit-rune` and `dither-core` as path or git dependencies, and copy Rune's
+`[patch.crates-io]` block along with the pinned revision.
 
 ## Commands
 

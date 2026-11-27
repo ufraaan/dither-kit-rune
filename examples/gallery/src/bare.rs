@@ -1,6 +1,6 @@
 //! chrome-free component captures for the landing page
 
-use crate::state::{Scene, State};
+use crate::state::{Scene, State, canvas};
 use crate::{interactions, widgets};
 use rune::tok::Theme;
 use rune::{El, col, el, row};
@@ -8,7 +8,7 @@ use rune::{El, col, el, row};
 pub fn page(state: &State, theme: &Theme, scene: Scene) -> El {
     el().w_full()
         .h_full()
-        .fill(theme.bg)
+        .fill(canvas(state))
         .center()
         .child(content(state, theme, scene))
 }

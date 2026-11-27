@@ -1,6 +1,6 @@
 # Notices and attribution
 
-This project is an unofficial Rust port of [Dither Kit](https://github.com/sortedcord/dither-kit)
+This project is an unofficial Rust port of [Dither Kit](https://github.com/Boring-Software-Inc/dither-kit)
 by its upstream authors, targeted at the [Rune](https://github.com/anomalyco/rune) UI framework.
 It is not affiliated with or endorsed by either project.
 

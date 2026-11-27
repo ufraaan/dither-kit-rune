@@ -1,6 +1,6 @@
 //! scene dispatch: a 2×2 dashboard grid or a single component
 
-use crate::state::State;
+use crate::state::{State, canvas};
 use crate::{bare, interactions, showcase, widgets};
 use rune::tok;
 use rune::tok::Theme;
@@ -28,7 +28,7 @@ fn dashboard(state: &State, theme: &Theme) -> El {
         .w_full()
         .h_full()
         .scroll(rune::ScrollSpec::default())
-        .fill(theme.bg)
+        .fill(canvas(state))
         .child(
             col()
                 .w_full()

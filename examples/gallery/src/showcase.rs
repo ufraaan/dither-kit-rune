@@ -1,6 +1,6 @@
 //! one component at a time, framed for screenshots
 
-use crate::state::{Scene, State};
+use crate::state::{Scene, State, canvas};
 use crate::{interactions, widgets};
 use rune::tok::{TextStyle, Theme};
 use rune::{El, col, el, row, text};
@@ -31,7 +31,7 @@ pub fn page(state: &State, theme: &Theme, scene: Scene) -> El {
         .h_full()
         .padding(28.0)
         .gap(14.0)
-        .fill(theme.bg)
+        .fill(canvas(state))
         .child(col().gap(4.0).child(kicker).child(heading).child(blurb))
         .child(
             el().w_full().grow(1.0).center().child(
