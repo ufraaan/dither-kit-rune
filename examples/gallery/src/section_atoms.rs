@@ -1,5 +1,6 @@
 //! avatars, buttons and the gradient wash
 
+use crate::interactions;
 use crate::state::State;
 use crate::widgets;
 use rune::tok::Theme;
@@ -12,27 +13,20 @@ fn avatars(state: &State) -> El {
         .fold(row().gap(10.0), |line, avatar| line.child(avatar.view()))
 }
 
-fn button(state: &State, theme: &Theme, index: usize) -> El {
-    state.buttons[index]
-        .view(theme)
-        .on_hover_change(move |state: &mut State, inside, _| state.buttons[index].hover(inside))
-        .on_press(move |state: &mut State| state.press(index))
-}
-
 fn buttons(state: &State, theme: &Theme) -> El {
     col()
         .gap(8.0)
         .child(
             row()
                 .gap(8.0)
-                .child(button(state, theme, 0))
-                .child(button(state, theme, 1)),
+                .child(interactions::button(state.buttons[0].view(theme), 0))
+                .child(interactions::button(state.buttons[1].view(theme), 1)),
         )
         .child(
             row()
                 .gap(8.0)
-                .child(button(state, theme, 2))
-                .child(button(state, theme, 3)),
+                .child(interactions::button(state.buttons[2].view(theme), 2))
+                .child(interactions::button(state.buttons[3].view(theme), 3)),
         )
 }
 

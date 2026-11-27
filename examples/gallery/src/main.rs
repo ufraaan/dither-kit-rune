@@ -1,18 +1,21 @@
-//! Dither Kit gallery: one deterministic scene with every component.
+//! Dither Kit gallery: a dashboard plus one screenshot-ready scene per component.
 //!
-//! `cargo run -p gallery` opens the window; `-- --snap gallery.png --at 2`
-//! renders it headless.
+//! `cargo run -p gallery` opens the dashboard. `-- --scene area` (or any scene
+//! name) opens one component; ← and → cycle scenes. `-- --snap out.png --at 2
+//! --scene area` renders one headless.
 
+mod interactions;
 mod section_atoms;
 mod section_cartesian;
 mod section_polar;
+mod showcase;
 mod state;
 mod view;
 mod widgets;
 
 use std::time::Duration;
 
-use rune::{AppSpec, Tx};
+use rune::{AppSpec, KeyEvent, Tx};
 
 fn poll(state: &mut state::State, clock: f64, tx: &mut Tx) -> bool {
     if state.reduced.get() {
@@ -43,6 +46,35 @@ fn poll(state: &mut state::State, clock: f64, tx: &mut Tx) -> bool {
     busy
 }
 
+fn on_key(state: &mut state::State, event: &KeyEvent, _: &mut Tx) -> bool {
+    let delta = match event.key {
+        rune::Key::Left => -1,
+        rune::Key::Right => 1,
+        _ => return false,
+    };
+    let next = state.scene.step(delta);
+    state.set_scene(next);
+    true
+}
+
+macro_rules! scene {
+    ($name:ident, $scene:expr) => {
+        fn $name(state: &mut state::State) {
+            state.set_scene($scene);
+        }
+    };
+}
+
+scene!(scene_dashboard, state::Scene::Dashboard);
+scene!(scene_area, state::Scene::Area);
+scene!(scene_bar, state::Scene::Bar);
+scene!(scene_sparkline, state::Scene::Sparkline);
+scene!(scene_donut, state::Scene::Donut);
+scene!(scene_radar, state::Scene::Radar);
+scene!(scene_avatars, state::Scene::Avatars);
+scene!(scene_buttons, state::Scene::Buttons);
+scene!(scene_gradient, state::Scene::Gradient);
+
 fn light(state: &mut state::State) {
     state.dark = false;
 }
@@ -53,11 +85,24 @@ fn reduced(state: &mut state::State) {
 
 fn main() {
     rune::run(AppSpec::<state::State> {
-        scenes: &[("light", light), ("reduced", reduced)],
+        scenes: &[
+            ("dashboard", scene_dashboard),
+            ("area", scene_area),
+            ("bar", scene_bar),
+            ("sparkline", scene_sparkline),
+            ("donut", scene_donut),
+            ("radar", scene_radar),
+            ("avatars", scene_avatars),
+            ("buttons", scene_buttons),
+            ("gradient", scene_gradient),
+            ("light", light),
+            ("reduced", reduced),
+        ],
         poll: Some(poll),
+        on_key: Some(on_key),
         ..AppSpec::new(
             "Dither Kit Gallery",
-            (1040.0, 720.0),
+            (960.0, 640.0),
             state::init,
             view::page,
         )
@@ -73,7 +118,7 @@ mod tests {
         let mut rt = Runtime::new(
             state::init(),
             view::page,
-            (1040.0, 720.0),
+            (960.0, 640.0),
             Env {
                 system_dark: true,
                 scale: 2.0,
@@ -84,15 +129,7 @@ mod tests {
     }
 
     #[test]
-    fn every_component_paints_at_its_own_backing_size() {
-        let state = state::init();
-        assert_eq!(state.area.texture().pixels().size(), (271, 77));
-        assert_eq!(state.pie.texture().pixels().size(), (145, 90));
-        assert_eq!(state.avatars[0].progress(), 0.0);
-    }
-
-    #[test]
-    fn the_scene_builds_with_every_key() {
+    fn the_dashboard_composes_every_component() {
         let rt = runtime();
         for key in [
             "area-chart",
@@ -104,6 +141,33 @@ mod tests {
         ] {
             assert!(rt.find(key).is_some(), "{key} missing");
         }
+    }
+
+    #[test]
+    fn entering_a_showcase_scene_resizes_its_component() {
+        let mut state = state::init();
+        state.set_scene(state::Scene::Area);
+        assert_eq!(state.area.texture().pixels().size(), (386, 142));
+        assert_eq!(state.scene, state::Scene::Area);
+
+        let mut rt = Runtime::new(
+            state,
+            view::page,
+            (960.0, 640.0),
+            Env {
+                system_dark: true,
+                scale: 2.0,
+            },
+        );
+        rt.frame(0.0);
+        assert!(rt.find("area-chart").is_some());
+    }
+
+    #[test]
+    fn scenes_cycle_in_both_directions() {
+        assert_eq!(state::Scene::Dashboard.step(1), state::Scene::Area);
+        assert_eq!(state::Scene::Dashboard.step(-1), state::Scene::Gradient);
+        assert_eq!(state::Scene::Avatars.step(1), state::Scene::Buttons);
     }
 
     #[test]

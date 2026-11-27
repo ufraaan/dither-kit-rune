@@ -27,8 +27,13 @@ macOS is the only supported target for now.
 - Entrances: left-to-right reveal, staggered bars, clockwise pie sweep, radar
   scale-in and Bayer-ordered avatar materialization.
 - Reduced motion settles every entrance without animating.
+- Scene switching: the dashboard is the default; arrow keys (or `--scene`) open
+  one component per scene for screenshots.
 - Deterministic headless scenes: `--snap out.png --at 2` captures the settled
   frame, `--at 0.32` a mid-entrance one, `--scene light` the light theme.
+
+Scenes: `dashboard`, `area`, `bar`, `sparkline`, `donut`, `radar`, `avatars`,
+`buttons`, `gradient`. Ready-made 2× captures live in [`shots/`](shots).
 
 Bloom is configured in `dither_core::bloom` but not yet drawn as a Rune layer.
 

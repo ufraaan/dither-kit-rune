@@ -1,4 +1,4 @@
-//! the demo's state and data
+//! the demo's state, scene list and per-scene sizing
 
 use std::cell::Cell;
 
@@ -19,7 +19,63 @@ pub const BTN_CLEAR: usize = 1;
 pub const BTN_THEME: usize = 2;
 pub const BTN_DISABLED: usize = 3;
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Scene {
+    Dashboard,
+    Area,
+    Bar,
+    Sparkline,
+    Donut,
+    Radar,
+    Avatars,
+    Buttons,
+    Gradient,
+}
+
+impl Scene {
+    pub const ALL: [Scene; 9] = [
+        Scene::Dashboard,
+        Scene::Area,
+        Scene::Bar,
+        Scene::Sparkline,
+        Scene::Donut,
+        Scene::Radar,
+        Scene::Avatars,
+        Scene::Buttons,
+        Scene::Gradient,
+    ];
+
+    pub const fn name(self) -> &'static str {
+        match self {
+            Scene::Dashboard => "dashboard",
+            Scene::Area => "area",
+            Scene::Bar => "bar",
+            Scene::Sparkline => "sparkline",
+            Scene::Donut => "donut",
+            Scene::Radar => "radar",
+            Scene::Avatars => "avatars",
+            Scene::Buttons => "buttons",
+            Scene::Gradient => "gradient",
+        }
+    }
+
+    pub fn index(self) -> usize {
+        Self::ALL.iter().position(|s| *s == self).unwrap_or(0)
+    }
+
+    pub fn step(self, delta: isize) -> Self {
+        let len = Self::ALL.len() as isize;
+        let index = (self.index() as isize + delta).rem_euclid(len);
+        Self::ALL[index as usize]
+    }
+
+    pub const fn is_showcase(self) -> bool {
+        !matches!(self, Scene::Dashboard)
+    }
+}
+
 pub struct State {
+    pub scene: Scene,
     pub dark: bool,
     /// mirrors the OS setting, read from `Cx` each frame
     pub reduced: Cell<bool>,
@@ -42,7 +98,7 @@ fn months() -> Vec<String> {
     .to_vec()
 }
 
-fn area_chart() -> Chart {
+fn area_chart(size: (f32, f32)) -> Chart {
     let desktop = [
         38.0, 42.0, 55.0, 48.0, 63.0, 58.0, 71.0, 66.0, 74.0, 62.0, 69.0, 57.0,
     ];
@@ -51,7 +107,7 @@ fn area_chart() -> Chart {
     ];
     Chart::new(
         ChartSpec::new(
-            (590.0, 190.0),
+            size,
             months(),
             vec![
                 ChartSeries::new("desktop", DitherColor::Blue),
@@ -69,7 +125,7 @@ fn area_chart() -> Chart {
     )
 }
 
-fn bar_chart() -> Chart {
+fn bar_chart(size: (f32, f32)) -> Chart {
     let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         .map(String::from)
         .to_vec();
@@ -77,7 +133,7 @@ fn bar_chart() -> Chart {
     let deploys = [31.0, 44.0, 39.0, 51.0, 46.0, 60.0, 41.0];
     Chart::new(
         ChartSpec::new(
-            (590.0, 170.0),
+            size,
             days,
             vec![
                 ChartSeries::new("builds", DitherColor::Green),
@@ -95,7 +151,7 @@ fn bar_chart() -> Chart {
     )
 }
 
-fn sparkline(key: &str, color: DitherColor, phase: f64) -> Chart {
+fn sparkline(key: &str, color: DitherColor, phase: f64, size: (f32, f32)) -> Chart {
     let values: Vec<f64> = (0..26)
         .map(|i| {
             let x = i as f64 * 0.5 + phase;
@@ -105,7 +161,7 @@ fn sparkline(key: &str, color: DitherColor, phase: f64) -> Chart {
     let categories: Vec<String> = (0..values.len()).map(|i| i.to_string()).collect();
     Chart::new(
         ChartSpec::new(
-            (270.0, 60.0),
+            size,
             categories,
             vec![ChartSeries::new(key, color)],
             vec![values],
@@ -115,10 +171,10 @@ fn sparkline(key: &str, color: DitherColor, phase: f64) -> Chart {
     )
 }
 
-fn pie_chart() -> Pie {
+fn pie_chart(size: (f32, f32)) -> Pie {
     Pie::new(
         PieSpec::new(
-            (290.0, 180.0),
+            size,
             vec![
                 PieSeries::new("rust", 38.0, DitherColor::Orange),
                 PieSeries::new("typescript", 27.0, DitherColor::Blue),
@@ -132,10 +188,10 @@ fn pie_chart() -> Pie {
     )
 }
 
-fn radar_chart() -> Radar {
+fn radar_chart(size: (f32, f32)) -> Radar {
     Radar::new(
         RadarSpec::new(
-            (290.0, 180.0),
+            size,
             ["speed", "size", "docs", "tests", "perf"]
                 .map(String::from)
                 .to_vec(),
@@ -149,30 +205,30 @@ fn radar_chart() -> Radar {
     )
 }
 
-fn avatars() -> [Avatar; 4] {
+fn avatars(size: f32) -> [Avatar; 4] {
     [
-        Avatar::new("ada", 40.0),
-        Avatar::new("Ada Lovelace", 40.0),
-        Avatar::new("🦀", 40.0),
-        Avatar::new("grace hopper", 40.0),
+        Avatar::new("ada", size),
+        Avatar::new("Ada Lovelace", size),
+        Avatar::new("🦀", size),
+        Avatar::new("grace hopper", size),
     ]
 }
 
-fn buttons() -> [DitherButton; 4] {
+fn buttons(size: (f32, f32)) -> [DitherButton; 4] {
     [
-        DitherButton::new(ButtonSpec::new("replay", (90.0, 28.0)).color(DitherColor::Blue)),
+        DitherButton::new(ButtonSpec::new("replay", size).color(DitherColor::Blue)),
         DitherButton::new(
-            ButtonSpec::new("clear", (90.0, 28.0))
+            ButtonSpec::new("clear", size)
                 .color(DitherColor::Purple)
                 .variant(Variant::Dotted),
         ),
         DitherButton::new(
-            ButtonSpec::new("theme", (90.0, 28.0))
+            ButtonSpec::new("theme", size)
                 .color(DitherColor::Pink)
                 .variant(Variant::Hatched),
         ),
         DitherButton::new(
-            ButtonSpec::new("disabled", (90.0, 28.0))
+            ButtonSpec::new("disabled", size)
                 .color(DitherColor::Grey)
                 .variant(Variant::Solid)
                 .disabled(true),
@@ -180,9 +236,9 @@ fn buttons() -> [DitherButton; 4] {
     ]
 }
 
-fn gradient() -> DitherGradient {
+fn gradient(size: (f32, f32)) -> DitherGradient {
     DitherGradient::new(
-        (290.0, 60.0),
+        size,
         GradientSpec::new(DitherColor::Blue.fill())
             .to(DitherColor::Pink.fill())
             .direction(Direction::Up)
@@ -191,7 +247,59 @@ fn gradient() -> DitherGradient {
     )
 }
 
+#[derive(Clone, Copy)]
+struct Sizes {
+    area: (f32, f32),
+    bar: (f32, f32),
+    spark: (f32, f32),
+    pie: (f32, f32),
+    radar: (f32, f32),
+    avatar: f32,
+    button: (f32, f32),
+    gradient: (f32, f32),
+}
+
+fn sizes(scene: Scene) -> Sizes {
+    if scene.is_showcase() {
+        Sizes {
+            area: (820.0, 320.0),
+            bar: (820.0, 300.0),
+            spark: (820.0, 190.0),
+            pie: (320.0, 300.0),
+            radar: (380.0, 320.0),
+            avatar: 88.0,
+            button: (160.0, 44.0),
+            gradient: (820.0, 220.0),
+        }
+    } else {
+        Sizes {
+            area: (590.0, 190.0),
+            bar: (590.0, 170.0),
+            spark: (270.0, 60.0),
+            pie: (290.0, 180.0),
+            radar: (290.0, 180.0),
+            avatar: 40.0,
+            button: (90.0, 28.0),
+            gradient: (290.0, 60.0),
+        }
+    }
+}
+
 impl State {
+    pub fn set_scene(&mut self, scene: Scene) {
+        let sizes = sizes(scene);
+        self.scene = scene;
+        self.area = area_chart(sizes.area);
+        self.bar = bar_chart(sizes.bar);
+        self.spark_a = sparkline("spark-a", DitherColor::Green, 0.0, sizes.spark);
+        self.spark_b = sparkline("spark-b", DitherColor::Pink, 1.7, sizes.spark);
+        self.pie = pie_chart(sizes.pie);
+        self.radar = radar_chart(sizes.radar);
+        self.avatars = avatars(sizes.avatar);
+        self.buttons = buttons(sizes.button);
+        self.gradient = gradient(sizes.gradient);
+    }
+
     pub fn press(&mut self, index: usize) {
         match index {
             BTN_REPLAY => self.replay_all(),
@@ -219,17 +327,19 @@ impl State {
 }
 
 pub fn init() -> State {
+    let sizes = sizes(Scene::Dashboard);
     State {
+        scene: Scene::Dashboard,
         dark: true,
         reduced: Cell::new(false),
-        area: area_chart(),
-        bar: bar_chart(),
-        spark_a: sparkline("spark-a", DitherColor::Green, 0.0),
-        spark_b: sparkline("spark-b", DitherColor::Pink, 1.7),
-        pie: pie_chart(),
-        radar: radar_chart(),
-        avatars: avatars(),
-        buttons: buttons(),
-        gradient: gradient(),
+        area: area_chart(sizes.area),
+        bar: bar_chart(sizes.bar),
+        spark_a: sparkline("spark-a", DitherColor::Green, 0.0, sizes.spark),
+        spark_b: sparkline("spark-b", DitherColor::Pink, 1.7, sizes.spark),
+        pie: pie_chart(sizes.pie),
+        radar: radar_chart(sizes.radar),
+        avatars: avatars(sizes.avatar),
+        buttons: buttons(sizes.button),
+        gradient: gradient(sizes.gradient),
     }
 }
