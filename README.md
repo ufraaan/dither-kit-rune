@@ -33,7 +33,16 @@ macOS is the only supported target for now.
   frame, `--at 0.32` a mid-entrance one, `--scene light` the light theme.
 
 Scenes: `dashboard`, `area`, `bar`, `sparkline`, `donut`, `radar`, `avatars`,
-`buttons`, `gradient`. Ready-made 2× captures live in [`shots/`](shots).
+`buttons`, `gradient`.
+
+The landing page in [`www/`](www/index.html) uses 2× WebP captures from
+[`www/shots/`](www/shots), dark and light. Regenerate them with
+`DITHER_LIGHT=1` set for the light set, e.g.:
+
+```sh
+cargo run -p gallery -- --snap /tmp/area.png --at 2 --scene area
+cwebp -q 85 /tmp/area.png -o www/shots/area-dark.webp
+```
 
 Bloom is configured in `dither_core::bloom` but not yet drawn as a Rune layer.
 

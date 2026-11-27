@@ -330,7 +330,8 @@ pub fn init() -> State {
     let sizes = sizes(Scene::Dashboard);
     State {
         scene: Scene::Dashboard,
-        dark: true,
+        // headless captures pick the theme without a second set of scenes
+        dark: std::env::var_os("DITHER_LIGHT").is_none(),
         reduced: Cell::new(false),
         area: area_chart(sizes.area),
         bar: bar_chart(sizes.bar),

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dither Kit for Rune</title>
+<meta name="description" content="A native Rust port of Dither Kit for the Rune UI framework: ordered-dither charts, avatars, buttons and gradients from one deterministic engine.">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #101012;
+    --panel: #16161a;
+    --line: rgba(255, 255, 255, 0.09);
+    --text: #f1f1f3;
+    --muted: #9d9da6;
+    --accent: #358ff3;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f2f3f4;
+      --panel: #fbfbfc;
+      --line: rgba(0, 0, 0, 0.1);
+      --text: #17181a;
+      --muted: #5e6067;
+      --accent: #2a6fd0;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 13px; }
+  .mark { display: grid; grid-template-columns: repeat(4, 4px); gap: 1px; }
+  .mark i { width: 4px; height: 4px; background: var(--text); opacity: 0.9; }
+  .mark i:nth-child(2n) { opacity: 0.28; }
+  .mark i:nth-child(3n) { opacity: 0.55; }
+  .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.02em; }
+
+  .hero { padding: 72px 0 44px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  h1 {
+    margin: 14px 0 0;
+    font-size: clamp(38px, 6.4vw, 62px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 620;
+  }
+  .lede {
+    margin: 20px 0 0;
+    max-width: 620px;
+    font-size: 17px;
+    color: var(--muted);
+  }
+  .run {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 26px;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  .run span { color: var(--muted); }
+
+  .shot {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  .hero-shot { margin-top: 40px; }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 {
+    margin: 0 0 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-lede { margin: 0 0 32px; font-size: 15px; color: var(--muted); max-width: 560px; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  figure { margin: 0; }
+  figcaption { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+  figcaption b { font-weight: 560; font-size: 14px; }
+  figcaption span { font-size: 13px; color: var(--muted); }
+
+  .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 760px) { .notes { grid-template-columns: 1fr; } }
+  .note h3 { margin: 0 0 6px; font-size: 14px; font-weight: 560; }
+  .note p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  .palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .swatch { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .swatch i { width: 12px; height: 12px; border-radius: 2px; display: block; }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 28px 0 48px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  footer a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      dither-kit-rune
+    </div>
+    <div class="meta">MIT · macOS · Rust</div>
+  </header>
+
+  <section class="hero" style="border:0">
+    <div class="eyebrow">Rust × Rune</div>
+    <h1>Dither Kit for Rune</h1>
+    <p class="lede">
+      A native Rust port of Dither Kit. The same ordered-dither texture across charts,
+      avatars, buttons and gradients — one deterministic engine, no canvas, no browser.
+    </p>
+    <div class="run"><span>$</span> cargo run -p gallery</div>
+    <div class="shot hero-shot">
+      <picture>
+        <source srcset="shots/dashboard-light.webp" media="(prefers-color-scheme: light)">
+        <img src="shots/dashboard-dark.webp" width="1908" height="1272" alt="Dashboard with an area chart, stacked bar chart, donut and radar rendered in Rune">
+      </picture>
+    </div>
+  </section>
+
+  <section>
+    <h2>Components</h2>
+    <p class="section-lede">Every component is a Rune element. Each screenshot is a deterministic headless render at 2×.</p>
+    <div class="grid">
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/area-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/area-dark.webp" loading="lazy" width="1908" height="1272" alt="Area chart with two series and a reference line">
+        </picture></div>
+        <figcaption><b>Area</b><span>stacking, reference line, scrub</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/bar-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/bar-dark.webp" loading="lazy" width="1908" height="1272" alt="Stacked bar chart with a staggered entrance">
+        </picture></div>
+        <figcaption><b>Bar</b><span>grouped or stacked, staggered rise</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/sparkline-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/sparkline-dark.webp" loading="lazy" width="1908" height="1272" alt="Sparkline without axes">
+        </picture></div>
+        <figcaption><b>Sparkline</b><span>the same chart, no chrome</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/donut-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/donut-dark.webp" loading="lazy" width="1908" height="1272" alt="Donut chart with five slices">
+        </picture></div>
+        <figcaption><b>Donut</b><span>radial dither, hover pop</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/radar-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/radar-dark.webp" loading="lazy" width="1908" height="1272" alt="Radar chart with two polygons">
+        </picture></div>
+        <figcaption><b>Radar</b><span>polygon dither, scale-in</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/avatars-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/avatars-dark.webp" loading="lazy" width="1908" height="1272" alt="Four deterministic generative avatars">
+        </picture></div>
+        <figcaption><b>Avatars</b><span>seeded 8×8 mirrored glyphs</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/buttons-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/buttons-dark.webp" loading="lazy" width="1908" height="1272" alt="Four dithered buttons">
+        </picture></div>
+        <figcaption><b>Buttons</b><span>native controls, hover lift</span></figcaption>
+      </figure>
+      <figure>
+        <div class="shot"><picture>
+          <source srcset="shots/gradient-light.webp" media="(prefers-color-scheme: light)">
+          <img src="shots/gradient-dark.webp" loading="lazy" width="1908" height="1272" alt="Directional dithered gradient">
+        </picture></div>
+        <figcaption><b>Gradient</b><span>quantized directional wash</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Engine</h2>
+    <div class="notes">
+      <div class="note">
+        <h3>One deterministic core</h3>
+        <p>The Bayer matrix, alpha tiers, scales and PRNG live in <code>dither-core</code>, with no UI dependency.</p>
+      </div>
+      <div class="note">
+        <h3>Opacity, not shades</h3>
+        <p>Every pixel is the series colour at a varying alpha, so the same surface reads correctly on light and dark.</p>
+      </div>
+      <div class="note">
+        <h3>Byte-parity fixtures</h3>
+        <p>Painter output is compared against buffers generated by the pinned upstream TypeScript.</p>
+      </div>
+    </div>
+    <div class="palette" aria-label="Palette">
+      <span class="swatch"><i style="background:#28d26e"></i>green</span>
+      <span class="swatch"><i style="background:#358ff3"></i>blue</span>
+      <span class="swatch"><i style="background:#966eff"></i>purple</span>
+      <span class="swatch"><i style="background:#f05abe"></i>pink</span>
+      <span class="swatch"><i style="background:#ff9632"></i>orange</span>
+      <span class="swatch"><i style="background:#f04646"></i>red</span>
+      <span class="swatch"><i style="background:#5c5c64"></i>grey</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>dither-kit-rune · unofficial port of Dither Kit · MIT</span>
+    <span>Rune pinned to dc64314 · screenshots 2×</span>
+  </footer>
+</div>
+</body>
+</html>
