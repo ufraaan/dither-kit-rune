@@ -35,13 +35,17 @@ pub fn caption(label: &str, theme: &Theme) -> El {
     text(label).font(CAPTION).color(theme.text_secondary)
 }
 
-/// caption row with the series legend on the right
-pub fn titled(label: &str, legend: Vec<LegendEntry>, theme: &Theme, group: SeriesGroup) -> El {
-    row()
-        .justify_between()
-        .center_y()
-        .child(caption(label, theme))
-        .child(legend_row(legend, theme, group))
+pub fn panel(title: &str, theme: &Theme, content: El) -> El {
+    el().padding(14.0)
+        .radius(12.0)
+        .fill(theme.card)
+        .border(1.0, theme.card_border)
+        .child(
+            col()
+                .gap(8.0)
+                .child(caption(title, theme))
+                .child(el().w_full().grow(1.0).center().child(content)),
+        )
 }
 
 pub fn legend_row(entries: Vec<LegendEntry>, theme: &Theme, group: SeriesGroup) -> El {
@@ -99,12 +103,4 @@ pub fn legend_wrapped(
         rows = rows.child(legend_row(chunk, theme, group));
     }
     rows
-}
-
-pub fn card(label: &str, theme: &Theme, chart: El) -> El {
-    el().padding(8.0)
-        .radius(8.0)
-        .fill(theme.card)
-        .border(1.0, theme.card_border)
-        .child(col().gap(4.0).child(caption(label, theme)).child(chart))
 }

@@ -5,9 +5,6 @@
 //! --scene area` renders one headless.
 
 mod interactions;
-mod section_atoms;
-mod section_cartesian;
-mod section_polar;
 mod showcase;
 mod state;
 mod view;
@@ -118,7 +115,7 @@ mod tests {
         let mut rt = Runtime::new(
             state::init(),
             view::page,
-            (960.0, 640.0),
+            (950.0, 600.0),
             Env {
                 system_dark: true,
                 scale: 2.0,
@@ -129,16 +126,16 @@ mod tests {
     }
 
     #[test]
-    fn the_dashboard_composes_every_component() {
+    fn the_dashboard_grid_paints_at_card_size() {
+        let state = state::init();
+        assert_eq!(state.area.texture().pixels().size(), (185, 68));
+        assert_eq!(state.pie.texture().pixels().size(), (209, 86));
+    }
+
+    #[test]
+    fn the_dashboard_shows_the_four_headline_charts() {
         let rt = runtime();
-        for key in [
-            "area-chart",
-            "bar-chart",
-            "pie-chart",
-            "radar-chart",
-            "spark-a",
-            "spark-b",
-        ] {
+        for key in ["area-chart", "bar-chart", "pie-chart", "radar-chart"] {
             assert!(rt.find(key).is_some(), "{key} missing");
         }
     }
@@ -153,7 +150,7 @@ mod tests {
         let mut rt = Runtime::new(
             state,
             view::page,
-            (960.0, 640.0),
+            (950.0, 600.0),
             Env {
                 system_dark: true,
                 scale: 2.0,
