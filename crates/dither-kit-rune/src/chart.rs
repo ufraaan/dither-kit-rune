@@ -2,6 +2,7 @@
 
 use crate::cartesian::{ChartKind, RenderOpts, Series, backing_size, render, x_scales};
 use crate::rune_el::SurfaceTexture;
+use crate::util::{format_tick, to_color};
 use dither_core::Surface;
 use dither_core::bayer::{clamp01, ease_in_out_cubic};
 use dither_core::color::{DitherColor, Rgb};
@@ -151,6 +152,21 @@ impl ChartSpec {
         self.reference = Some(value);
         self
     }
+
+    /// decorative sparkline: no chrome, no tooltip, no entrance
+    pub fn sparkline(mut self) -> Self {
+        self.margins = Margins {
+            top: 3.0,
+            right: 0.0,
+            bottom: 3.0,
+            left: 0.0,
+        };
+        self.grid = false;
+        self.axes = false;
+        self.tooltip = false;
+        self.animate = false;
+        self
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -242,6 +258,26 @@ impl Chart {
 
     pub fn progress(&self) -> f64 {
         self.progress
+    }
+
+    /// settle the entrance without animating
+    pub fn finish(&mut self) -> bool {
+        if self.progress < 1.0 {
+            self.progress = 1.0;
+            self.repaint();
+            true
+        } else {
+            false
+        }
+    }
+
+    /// play the entrance again
+    pub fn replay(&mut self) {
+        if self.spec.animate {
+            self.progress = 0.0;
+            self.started = None;
+            self.repaint();
+        }
     }
 
     /// Advance the entrance animation. Returns true while more frames are due.
@@ -562,27 +598,5 @@ fn chart_label(kind: ChartKind) -> &'static str {
         ChartKind::Area => "Area",
         ChartKind::Line => "Line",
         ChartKind::Bar => "Bar",
-    }
-}
-
-/// Axis and tooltip number formatting: integers stay integers, the rest keep a
-/// decimal.
-pub fn format_tick(value: f64) -> String {
-    if value.abs() < 0.0001 {
-        "0".to_string()
-    } else if (value - value.round()).abs() < 0.05 {
-        format!("{:.0}", value)
-    } else {
-        format!("{:.1}", value)
-    }
-}
-
-/// An engine color as a Rune color.
-pub fn to_color(rgb: Rgb) -> rune::Color {
-    rune::Color {
-        r: rgb.r as f32 / 255.0,
-        g: rgb.g as f32 / 255.0,
-        b: rgb.b as f32 / 255.0,
-        a: 1.0,
     }
 }

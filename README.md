@@ -18,15 +18,19 @@ macOS is the only supported target for now.
 
 - Area, line and bar charts on a shared chart model (`ChartSpec` / `Chart`).
 - Horizontal grid, x/y axes, reference line, hover crosshair and dot markers.
+- Donut/pie charts with per-pixel radial dither, slice hover pop and tooltips.
+- Radar charts with a ring/spoke frame, polygon dither and vertex markers.
+- Deterministic mirrored avatars, dithered buttons, directional gradient washes.
+- Sparklines: the same chart with `ChartSpec::sparkline()`.
 - Pointer hover, arrow-key inspection, Escape to clear, clickable legends that
   isolate a series, light/dark themes.
-- Entrance animation: left-to-right reveal for continuous charts, staggered
-  growth for bars, driven from `AppSpec::poll` with `Tx::wake_after`.
+- Entrances: left-to-right reveal, staggered bars, clockwise pie sweep, radar
+  scale-in and Bayer-ordered avatar materialization.
+- Reduced motion settles every entrance without animating.
 - Deterministic headless scenes: `--snap out.png --at 2` captures the settled
-  frame, `--at 0.32` a mid-entrance one.
+  frame, `--at 0.32` a mid-entrance one, `--scene light` the light theme.
 
-Not yet: sparkline chrome, bloom layer, polar charts, avatars, buttons,
-gradients, reduced-motion policy.
+Bloom is configured in `dither_core::bloom` but not yet drawn as a Rune layer.
 
 ## Commands
 
