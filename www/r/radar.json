@@ -1,0 +1,18 @@
+{
+  "description": "Polygons over evenly-spaced spokes, dithered by distance to the edge.",
+  "docs": "crates/dither-kit-rune/src/radar.rs",
+  "install": {
+    "cli": "dither add radar",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "radar",
+  "scene": "radar",
+  "snippet": "// radar chart — one value per axis, series-major\nuse dither_core::color::DitherColor;\nuse dither_kit_rune::radar::{Radar, RadarSeries, RadarSpec};\n\npub fn chart() -> Radar {\n    Radar::new(\n        RadarSpec::new(\n            (720.0, 560.0),\n            [\"speed\", \"size\", \"docs\", \"tests\", \"perf\"].map(String::from).to_vec(),\n            vec![\n                RadarSeries::new(\"v1\", DitherColor::Blue),\n                RadarSeries::new(\"v2\", DitherColor::Pink),\n            ],\n            vec![vec![7.0, 6.0, 5.0, 8.0, 6.0], vec![9.0, 8.0, 9.0, 7.0, 9.0]],\n        ),\n    )\n}\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Radar chart"
+}

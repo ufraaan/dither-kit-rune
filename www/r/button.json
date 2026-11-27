@@ -1,0 +1,18 @@
+{
+  "description": "Native focusable control with a dithered fill that lifts on hover.",
+  "docs": "crates/dither-kit-rune/src/button.rs",
+  "install": {
+    "cli": "dither add button",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "button",
+  "scene": "buttons",
+  "snippet": "// button — a real control; wire hover, press and the action yourself\nuse dither_core::color::DitherColor;\nuse dither_kit_rune::button::{ButtonSpec, DitherButton};\n\npub fn button() -> DitherButton {\n    DitherButton::new(ButtonSpec::new(\"save changes\", (200.0, 56.0)).color(DitherColor::Blue))\n}\n\n// in your view:\n//\n// button.view(theme)\n//     .on_hover_change(|state: &mut App, inside, _| state.button.hover(inside))\n//     .on_press(|state: &mut App| state.save())\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Button"
+}

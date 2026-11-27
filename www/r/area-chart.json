@@ -1,0 +1,18 @@
+{
+  "description": "Two-series dithered area chart with a reference line and hover scrubbing.",
+  "docs": "crates/dither-kit-rune/src/chart.rs",
+  "install": {
+    "cli": "dither add area-chart",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "area-chart",
+  "scene": "area",
+  "snippet": "// area chart — build once, keep the Chart in your state\nuse dither_core::color::DitherColor;\nuse dither_kit_rune::cartesian::ChartKind;\nuse dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};\n\npub fn chart() -> Chart {\n    Chart::new(\n        ChartSpec::new(\n            (840.0, 320.0),\n            [\"Jan\", \"Feb\", \"Mar\", \"Apr\"].map(String::from).to_vec(),\n            vec![ChartSeries::new(\"value\", DitherColor::Blue)],\n            vec![vec![12.0, 18.0, 15.0, 22.0]],\n        )\n        .kind(ChartKind::Area),\n    )\n}\n\n// in your view, forward pointer input; the app's state owns the chart\n//\n// chart.view(theme)\n//     .on_pointer_move_local(|state: &mut App, p, _| state.chart.hover_at(p.x))\n//     .on_hover_change(|state: &mut App, inside, _| {\n//         if !inside { state.chart.leave(); }\n//     })\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Area chart"
+}

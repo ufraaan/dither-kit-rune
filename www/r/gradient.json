@@ -1,0 +1,18 @@
+{
+  "description": "Quantized directional wash, one colour to another or to transparent.",
+  "docs": "crates/dither-kit-rune/src/gradient.rs",
+  "install": {
+    "cli": "dither add gradient",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "gradient",
+  "scene": "gradient",
+  "snippet": "// gradient — quantized directional wash\nuse dither_core::color::DitherColor;\nuse dither_core::gradient::{Direction, GradientSpec};\nuse dither_kit_rune::gradient::DitherGradient;\n\npub fn gradient() -> DitherGradient {\n    DitherGradient::new(\n        (900.0, 480.0),\n        GradientSpec::new(DitherColor::Blue.fill())\n            .direction(Direction::Up)\n            .cell(3.0)\n            .opacity(0.9),\n    )\n}\n\n// two-tone: .to(DitherColor::Pink.fill())\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Gradient"
+}

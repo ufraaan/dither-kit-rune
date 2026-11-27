@@ -1,0 +1,18 @@
+{
+  "description": "Grouped or stacked bars with a staggered entrance and category hover.",
+  "docs": "crates/dither-kit-rune/src/cartesian.rs",
+  "install": {
+    "cli": "dither add bar-chart",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "bar-chart",
+  "scene": "bar",
+  "snippet": "// bar chart — grouped by default, stacked when you say so\nuse dither_core::color::DitherColor;\nuse dither_core::stack::StackMode;\nuse dither_kit_rune::cartesian::ChartKind;\nuse dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};\n\npub fn chart() -> Chart {\n    Chart::new(\n        ChartSpec::new(\n            (840.0, 320.0),\n            [\"Mon\", \"Tue\", \"Wed\", \"Thu\"].map(String::from).to_vec(),\n            vec![\n                ChartSeries::new(\"builds\", DitherColor::Green),\n                ChartSeries::new(\"deploys\", DitherColor::Purple),\n            ],\n            vec![vec![42.0, 58.0, 61.0, 47.0], vec![31.0, 44.0, 39.0, 51.0]],\n        )\n        .kind(ChartKind::Bar)\n        .stack(StackMode::Stacked),\n    )\n}\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Bar chart"
+}

@@ -1,0 +1,18 @@
+{
+  "description": "One series, no chrome: the same chart with axes and tooltip off.",
+  "docs": "crates/dither-kit-rune/src/chart.rs",
+  "install": {
+    "cli": "dither add sparkline",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "sparkline",
+  "scene": "sparkline",
+  "snippet": "// sparkline — the chart with its chrome turned off\nuse dither_core::color::DitherColor;\nuse dither_kit_rune::chart::{Chart, ChartSeries, ChartSpec};\n\npub fn chart() -> Chart {\n    let values = [3.0, 7.0, 5.0, 9.0, 8.0, 12.0, 10.0, 14.0, 11.0, 16.0];\n    let categories = (0..values.len()).map(|i| i.to_string()).collect();\n    Chart::new(\n        ChartSpec::new(\n            (840.0, 180.0),\n            categories,\n            vec![ChartSeries::new(\"value\", DitherColor::Green)],\n            vec![values.to_vec()],\n        )\n        .sparkline(),\n    )\n}\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Sparkline"
+}

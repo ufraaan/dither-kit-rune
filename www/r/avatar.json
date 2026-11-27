@@ -1,0 +1,18 @@
+{
+  "description": "Deterministic mirrored 8x8 glyph seeded by a name.",
+  "docs": "crates/dither-kit-rune/src/avatar.rs",
+  "install": {
+    "cli": "dither add avatar",
+    "dependency": "dither-kit-rune = { path = \"crates/dither-kit-rune\" }"
+  },
+  "name": "avatar",
+  "scene": "avatars",
+  "snippet": "// avatar — same name, same glyph, every time\nuse dither_kit_rune::avatar::Avatar;\n\npub fn avatar(name: &str) -> Avatar {\n    Avatar::new(name, 92.0)\n}\n\n// view: avatar.view()\n// hue:  Avatar::new(\"ada\", 92.0).hue(210.0)\n// fold: .mirror(AvatarMirror::Horizontal)\n",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "title": "Avatar"
+}

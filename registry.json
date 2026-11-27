@@ -1,0 +1,78 @@
+{
+  "name": "dither-kit-rune",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "www/index.html",
+  "source": {
+    "crate": "dither-kit-rune",
+    "path": "crates/dither-kit-rune",
+    "engine": "crates/dither-core",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "items": [
+    {
+      "name": "area-chart",
+      "title": "Area chart",
+      "description": "Two-series dithered area chart with a reference line and hover scrubbing.",
+      "scene": "area",
+      "snippet": "registry/area.rs",
+      "docs": "crates/dither-kit-rune/src/chart.rs"
+    },
+    {
+      "name": "bar-chart",
+      "title": "Bar chart",
+      "description": "Grouped or stacked bars with a staggered entrance and category hover.",
+      "scene": "bar",
+      "snippet": "registry/bar.rs",
+      "docs": "crates/dither-kit-rune/src/cartesian.rs"
+    },
+    {
+      "name": "sparkline",
+      "title": "Sparkline",
+      "description": "One series, no chrome: the same chart with axes and tooltip off.",
+      "scene": "sparkline",
+      "snippet": "registry/sparkline.rs",
+      "docs": "crates/dither-kit-rune/src/chart.rs"
+    },
+    {
+      "name": "donut",
+      "title": "Donut chart",
+      "description": "Pie or donut with per-pixel radial dither, hover pop and slice tooltips.",
+      "scene": "donut",
+      "snippet": "registry/donut.rs",
+      "docs": "crates/dither-kit-rune/src/pie.rs"
+    },
+    {
+      "name": "radar",
+      "title": "Radar chart",
+      "description": "Polygons over evenly-spaced spokes, dithered by distance to the edge.",
+      "scene": "radar",
+      "snippet": "registry/radar.rs",
+      "docs": "crates/dither-kit-rune/src/radar.rs"
+    },
+    {
+      "name": "avatar",
+      "title": "Avatar",
+      "description": "Deterministic mirrored 8x8 glyph seeded by a name.",
+      "scene": "avatars",
+      "snippet": "registry/avatar.rs",
+      "docs": "crates/dither-kit-rune/src/avatar.rs"
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Native focusable control with a dithered fill that lifts on hover.",
+      "scene": "buttons",
+      "snippet": "registry/button.rs",
+      "docs": "crates/dither-kit-rune/src/button.rs"
+    },
+    {
+      "name": "gradient",
+      "title": "Gradient",
+      "description": "Quantized directional wash, one colour to another or to transparent.",
+      "scene": "gradient",
+      "snippet": "registry/gradient.rs",
+      "docs": "crates/dither-kit-rune/src/gradient.rs"
+    }
+  ]
+}

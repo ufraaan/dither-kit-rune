@@ -1,0 +1,77 @@
+{
+  "items": [
+    {
+      "description": "Two-series dithered area chart with a reference line and hover scrubbing.",
+      "docs": "crates/dither-kit-rune/src/chart.rs",
+      "name": "area-chart",
+      "scene": "area",
+      "snippet": "registry/area.rs",
+      "title": "Area chart"
+    },
+    {
+      "description": "Grouped or stacked bars with a staggered entrance and category hover.",
+      "docs": "crates/dither-kit-rune/src/cartesian.rs",
+      "name": "bar-chart",
+      "scene": "bar",
+      "snippet": "registry/bar.rs",
+      "title": "Bar chart"
+    },
+    {
+      "description": "One series, no chrome: the same chart with axes and tooltip off.",
+      "docs": "crates/dither-kit-rune/src/chart.rs",
+      "name": "sparkline",
+      "scene": "sparkline",
+      "snippet": "registry/sparkline.rs",
+      "title": "Sparkline"
+    },
+    {
+      "description": "Pie or donut with per-pixel radial dither, hover pop and slice tooltips.",
+      "docs": "crates/dither-kit-rune/src/pie.rs",
+      "name": "donut",
+      "scene": "donut",
+      "snippet": "registry/donut.rs",
+      "title": "Donut chart"
+    },
+    {
+      "description": "Polygons over evenly-spaced spokes, dithered by distance to the edge.",
+      "docs": "crates/dither-kit-rune/src/radar.rs",
+      "name": "radar",
+      "scene": "radar",
+      "snippet": "registry/radar.rs",
+      "title": "Radar chart"
+    },
+    {
+      "description": "Deterministic mirrored 8x8 glyph seeded by a name.",
+      "docs": "crates/dither-kit-rune/src/avatar.rs",
+      "name": "avatar",
+      "scene": "avatars",
+      "snippet": "registry/avatar.rs",
+      "title": "Avatar"
+    },
+    {
+      "description": "Native focusable control with a dithered fill that lifts on hover.",
+      "docs": "crates/dither-kit-rune/src/button.rs",
+      "name": "button",
+      "scene": "buttons",
+      "snippet": "registry/button.rs",
+      "title": "Button"
+    },
+    {
+      "description": "Quantized directional wash, one colour to another or to transparent.",
+      "docs": "crates/dither-kit-rune/src/gradient.rs",
+      "name": "gradient",
+      "scene": "gradient",
+      "snippet": "registry/gradient.rs",
+      "title": "Gradient"
+    }
+  ],
+  "license": "MIT",
+  "name": "dither-kit-rune",
+  "source": {
+    "crate": "dither-kit-rune",
+    "engine": "crates/dither-core",
+    "path": "crates/dither-kit-rune",
+    "rune_rev": "dc64314b816afdd77689209f14647407034940cb"
+  },
+  "version": "0.1.0"
+}

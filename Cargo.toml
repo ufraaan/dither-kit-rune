@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/dither-core", "crates/dither-kit-rune", "examples/gallery"]
+members = ["crates/dither-core", "crates/dither-kit-rune", "crates/dither-cli", "examples/gallery"]
 
 [workspace.package]
 version = "0.1.0"
