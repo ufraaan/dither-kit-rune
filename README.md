@@ -14,6 +14,20 @@ macOS is the only supported target for now.
 | `examples/gallery` | Deterministic scene; renders headless to PNG. |
 | `crates/dither-core/tests/fixtures` | Byte-for-byte painter fixtures generated from the pinned upstream TypeScript. |
 
+## What works
+
+- Area, line and bar charts on a shared chart model (`ChartSpec` / `Chart`).
+- Horizontal grid, x/y axes, reference line, hover crosshair and dot markers.
+- Pointer hover, arrow-key inspection, Escape to clear, clickable legends that
+  isolate a series, light/dark themes.
+- Entrance animation: left-to-right reveal for continuous charts, staggered
+  growth for bars, driven from `AppSpec::poll` with `Tx::wake_after`.
+- Deterministic headless scenes: `--snap out.png --at 2` captures the settled
+  frame, `--at 0.32` a mid-entrance one.
+
+Not yet: sparkline chrome, bloom layer, polar charts, avatars, buttons,
+gradients, reduced-motion policy.
+
 ## Commands
 
 ```sh

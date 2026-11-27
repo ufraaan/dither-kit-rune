@@ -8,9 +8,11 @@
 pub use dither_core as core;
 
 pub mod cartesian;
+pub mod chart;
 pub mod rune_el;
 
-pub use cartesian::{Series, SeriesKind};
+pub use cartesian::{ChartKind, Series, SeriesKind};
+pub use chart::{Chart, ChartSeries, ChartSpec, LegendEntry, Margins};
 pub use core::color::{DitherColor, Rgb, Seed};
 pub use core::paint::{PaintOpts, Variant};
 pub use rune_el::SurfaceTexture;
