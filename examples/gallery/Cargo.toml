@@ -1,0 +1,15 @@
+[package]
+name = "gallery"
+description = "Deterministic Dither Kit scenes rendered with Rune"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+dither-core.workspace = true
+dither-kit-rune.workspace = true
+rune.workspace = true
+
+[lints]
+workspace = true
